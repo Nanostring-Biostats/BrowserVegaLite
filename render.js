@@ -438,11 +438,6 @@ Render.prototype = {
       }
       // Add segmentation mask menu
       this.addMasks();
-
-      // Add a footer, if applicable
-      if (HS.waypoint.Footer) {
-        this.addFooter();
-      };
       // Add stories navigation menu
       this.newStories();
 
@@ -551,7 +546,8 @@ Render.prototype = {
     const prefix = '#' + HS.id + ' ';
 
     // Enable home button if in outline mode, otherwise enable table of contents button
-    displayOrNot(prefix+'.minerva-toc-button', !edit);
+    displayOrNot(prefix+'.minerva-home-button', !noHome && !edit && HS.waypoint.Mode == 'outline');
+    displayOrNot(prefix+'.minerva-toc-button', !edit && HS.waypoint.Mode != 'outline');
     // Enable 3D UI if in 3D mode
     displayOrNot(prefix+'.minerva-channel-groups-legend', !HS.design.is3d);
     displayOrNot(prefix+'.minerva-z-slider-legend', HS.design.is3d);
@@ -575,11 +571,6 @@ Render.prototype = {
     const minimal_sidebar = !edit && HS.totalCount == 1 && !decode(HS.d);
     classOrNot(prefix+'.minerva-sidebar-menu', minimal_sidebar, 'minimal');
     displayOrNot(prefix+'.minerva-welcome-nav', !minimal_sidebar);
-    // Disable sidebar if no content
-    if (minimal_sidebar && noHome) {
-      classOrNot(prefix+'.minerva-sidebar-menu', true, 'toggled');
-      displayOrNot(prefix+'.minerva-toggle-sidebar', false);
-    }
 
     // H&E should not display number of cycif markers
     const is_h_e = HS.group.Name == 'H&E';
@@ -672,30 +663,6 @@ Render.prototype = {
     else {
       $('.minerva-mask-label').hide()
     }
-
-    // Add button to turn on and off all data layers if there are masks specified in the story for that waypoint
-    if (HS.waypoint.Masks) {
-      let allMasksButton = document.createElement('button');
-      allMasksButton.innerText = 'All data layers';
-      allMasksButton = Object.assign(allMasksButton, {
-        className: HS.active_masks.length === HS.waypoint.Masks.length ? 'all-layers active' : 'all-layers'
-      })
-      HS.el.getElementsByClassName('minerva-mask-layers')[0].appendChild(allMasksButton);
-      $(allMasksButton).click(this, () => {
-        if (HS.active_masks.length !== HS.waypoint.Masks.length) {
-          HS.waypoint.Masks.forEach((el, _i) => {
-            const dataLayerIndex = HS.masks.findIndex(dl => dl.Name === el);
-            if (!HS.m.includes(dataLayerIndex)) {
-              HS.m.push(dataLayerIndex)
-            }
-          })
-        } else {
-          HS.m = [-1]
-        }
-        HS.pushState();
-        window.onpopstate();
-      })
-  } 
     // Add masks with indices
     masks.forEach(function(mask) {
       const m = index_name(HS.masks, mask.Name);
@@ -740,15 +707,6 @@ Render.prototype = {
       HS.pushState();
       window.onpopstate();
     });
-  },
-
-  //Nanostring edit: Add footer from the exhibit.json file
-  addFooter: function() {
-    const HS = this.hashstate;
-    const footerP = document.createElement('p');
-    const footerText = HS.waypoint.Footer;
-    footerP.innerHTML = this.showdown.makeHtml(footerText);
-    HS.el.getElementsByClassName('minerva-mask-layers')[0].appendChild(footerP)
   },
 
   // Add list of channel groups
@@ -829,7 +787,7 @@ Render.prototype = {
         }
       }
     }
-
+    
     var moreEl = document.createElement('a');
     if (selected && show_more && s_w) {
       const opacity = 'opacity: ' +  + ';';
@@ -925,17 +883,13 @@ Render.prototype = {
 
       var sid_item = document.createElement('div');
       var sid_list = document.createElement('ol');
-      // NanoString Change - to allow for the Appendix to appear on the Table of Contents
       HS.stories.forEach(function(story, sid) {
+        if (story.Mode != 'explore') {
           this.addStory(story, sid, sid_list);
+        }
       }, this);
       sid_item.appendChild(sid_list);
       items.appendChild(sid_item);
-      //Nanostring change to allow exhibit.json to allow for text below the Table of Contents
-      const tocDescription = document.createElement('p');
-      const tocText = HS.stories[1]["Description"];
-      tocDescription.innerHTML = this.showdown.makeHtml(tocText);
-      items.appendChild(tocDescription);
     }
 
     const footer = document.createElement('p')
@@ -1002,17 +956,37 @@ Render.prototype = {
     $(wid_waypoint).css('height', $(wid_waypoint).height());
 
     // Waypoint description markdown
-    let md = (() => {
-      if (waypoint.Mode === 'explore' && HS.exhibit.Appendix) {
-        return HS.exhibit.Appendix
-      } else {
-        return waypoint.Description
-      }
-    })();
+    var md = waypoint.Description;
 
+    // Create links for cell types
+    HS.cell_type_links_map.forEach(function(link, type){
+      var escaped_type = type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      var re = RegExp(escaped_type+'s?', 'gi');
+      md = md.replace(re, function(m) {
+        return '['+m+']('+link+')';
+      });
+    });
+
+    // Create code blocks for protein markers
+    HS.marker_links_map.forEach(function(link, marker){
+      var escaped_marker = marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      var re = RegExp('(^|[^0-9A-Za-z`])\('+escaped_marker+'\)([^0-9A-Za-z`]|$)', 'gi');
+      md = md.replace(re, function(m, pre, m1, post) {
+        return m.replace(m1, '`'+m1+'`', 'gi');
+      });
+    });
+
+    // Create links for protein markers
+    HS.marker_links_map.forEach(function(link, marker){
+      var escaped_marker = marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      var re = RegExp('`'+escaped_marker+'`', 'gi');
+      md = md.replace(re, function(m) {
+        return '['+m+']('+link+')';
+      });
+    });
 
     // All categories of possible visualization types
-    const allVis = ['VisMatrix', 'VisBarChart', 'VisScatterplot', "VisCanvasScatterplot", "Other", "MaskAndPan", "chanAndMaskandPan", "multipleMasksHandler", "multipleMasksAndPan", "multipleMasksPanChannel"];
+    const allVis = ['VisMatrix', 'VisBarChart', 'VisScatterplot', "VisCanvasScatterplot"];
     
     const waypointVis = new Set(allVis.filter(v => waypoint[v]));
     const renderedVis = new Set();
@@ -1026,120 +1000,18 @@ Render.prototype = {
         $(wid_waypoint).css('height', '');
         THIS.colorMarkerText(wid_waypoint);
       }
-
-      // NanoString edit: change all url links to open in a new tab (had to filter our href=javascript;;)
-      const links = document.querySelectorAll('a[href*="http"]:not(a[href*="javascript"])');
-      links.forEach((link) => {
-          link.setAttribute('target', '_blank');
-      })  
     }
 
     // Handle click from plot that selects a mask
     const maskHandler = function(d) {
       var name = d.type;
       var escaped_name = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const re = RegExp('^'+escaped_name+'$','gi');
+      const re = RegExp(escaped_name,'gi');
       const m = index_regex(HS.masks, re);
       if (m >= 0) {
-        HS.m = [-1, m];
+        HS.m = [m];
       }
-      //render without menu redraw
-      HS.pushState();
-      window.onpopstate();
-    }
-
-    // Handle click from plot that adds multiple masks
-    const multipleMasksHandler = function(d) {
-      // type must be a string of mask names separated by a comma and no spaces between the comma and names
-      const names = d.type.split(',');
-      HS.m = [-1]
-      names.forEach((name) => {
-        var escaped_name = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const re = RegExp('^'+escaped_name+'$','gi');
-        const mask = index_regex(HS.masks, re);
-        if (mask >= 0) {
-          HS.m.push(mask);
-        }
-      })
-      // render without menu redraw
-      HS.pushState();
-      window.onpopstate();
-    }
-
-    const multipleMasksPanChannel = function(d){
-      // Pan and Zoom to coordinates from data file
-      var cellPosition = [parseInt(d['X_position']), parseInt(d['Y_position'])]
-      if (!Number.isNaN(cellPosition[0])) {
-        var viewportCoordinates = THIS.osd.viewer.viewport.imageToViewportCoordinates(cellPosition[0], cellPosition[1]);
-        //change hashstate vars
-        HS.v = [ 10, viewportCoordinates.x, viewportCoordinates.y]
-      };
-      //Change channels and masks based on data file
-      var chan = d.channel
-      // type must be a string of mask names separated by a comma and no spaces between the comma and names
-      const names = d.type.split(',');
-      HS.m = [-1]
-      names.forEach((name) => {
-        var escaped_name = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const re = RegExp('^'+escaped_name+'$','gi');
-        const mask = index_regex(HS.masks, re);
-        if (mask >= 0) {
-          HS.m.push(mask);
-        }
-      })
-
-      const c = index_name(HS.cgs, chan);
-      if (c >= 0) {
-        HS.g = c;
-      }
-      else {
-        var escaped_chan = chan.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const re_chan = RegExp(escaped_chan,'gi');
-        const r_c = index_regex(HS.cgs, re_chan);
-        if (r_c >= 0) {
-          HS.g = r_c;
-        }
-      }
-      // render without menu redraw
-      HS.pushState();
-      window.onpopstate();
-    }
-
-    // Handle click from plot that selects a mask and channel
-    const chanAndMaskandPanHandler = function(d) {
-      // Pan and Zoom to coordinates from data file
-      var cellPosition = [parseInt(d['X_position']), parseInt(d['Y_position'])]
-      if (!Number.isNaN(cellPosition[0])) {
-        var viewportCoordinates = THIS.osd.viewer.viewport.imageToViewportCoordinates(cellPosition[0], cellPosition[1]);
-        //change hashstate vars
-        HS.v = [ 10, viewportCoordinates.x, viewportCoordinates.y];
-      }
-      
-      //Change channels and masks based on data file
-      var chan = d.channel
-      var mask = d.type
-      var escaped_mask = mask.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const re_mask = RegExp('^'+escaped_mask+'$','gi');
-      const m = index_regex(HS.masks, re_mask);
-      if (m >= 0) {
-        HS.m = [-1, m];
-      }
-      
-      const c = index_name(HS.cgs, chan);
-      if (c >= 0) {
-        HS.g = c;
-      }
-      else {
-        var escaped_chan = chan.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const re_chan = RegExp(escaped_chan,'gi');
-        const r_c = index_regex(HS.cgs, re_chan);
-        if (r_c >= 0) {
-          HS.g = r_c;
-        }
-      }
-
-      HS.pushState();
-      window.onpopstate();
+      THIS.newView(true);
     }
 
     // Handle click from plot that selects a mask and channel
@@ -1147,10 +1019,10 @@ Render.prototype = {
       var chan = d.channel
       var mask = d.type
       var escaped_mask = mask.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const re_mask = RegExp('^'+escaped_mask+'$','gi');
+      const re_mask = RegExp(escaped_mask,'gi');
       const m = index_regex(HS.masks, re_mask);
       if (m >= 0) {
-        HS.m = [-1, m];
+        HS.m = [m];
       }
       
       const c = index_name(HS.cgs, chan);
@@ -1165,17 +1037,12 @@ Render.prototype = {
           HS.g = r_c;
         }
       }
-
-      HS.pushState();
-      window.onpopstate();
+      THIS.newView(true);
     }
 
     // Handle click from plot that selects a cell position
     const arrowHandler = function(d){
         var cellPosition = [parseInt(d['X_position']), parseInt(d['Y_position'])]
-        if (Number.isNaN(cellPosition[0])) {
-          return;
-        };
         var viewportCoordinates = THIS.osd.viewer.viewport.imageToViewportCoordinates(cellPosition[0], cellPosition[1]);
         //change hashstate vars
         HS.v = [ 10, viewportCoordinates.x, viewportCoordinates.y]
@@ -1185,51 +1052,6 @@ Render.prototype = {
         HS.a = [viewportCoordinates.x,viewportCoordinates.y];
     }
 
-    const MaskAndPan = function(d){
-        // Pan and Zoom to coordinates from data file
-        var cellPosition = [parseInt(d['X_position']), parseInt(d['Y_position'])]
-        if (!Number.isNaN(cellPosition[0])) {
-            var viewportCoordinates = THIS.osd.viewer.viewport.imageToViewportCoordinates(cellPosition[0], cellPosition[1]);
-            //change hashstate vars
-            HS.v = [ 10, viewportCoordinates.x, viewportCoordinates.y]
-        };
-        // Add Mask specified in data file
-        var name = d.type;
-        var escaped_name = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const re = RegExp('^'+escaped_name+'$','gi');
-        const m = index_regex(HS.masks, re);
-        if (m >= 0) {
-          HS.m = [-1, m];
-        }
-        //render without menu redraw
-        HS.pushState();
-        window.onpopstate();
-    }
-
-    const multipleMasksAndPan = function(d){
-      // Pan and Zoom to coordinates from data file
-      var cellPosition = [parseInt(d['X_position']), parseInt(d['Y_position'])]
-      if (!Number.isNaN(cellPosition[0])) {
-          var viewportCoordinates = THIS.osd.viewer.viewport.imageToViewportCoordinates(cellPosition[0], cellPosition[1]);
-          //change hashstate vars
-          HS.v = [ 10, viewportCoordinates.x, viewportCoordinates.y]
-      };
-      // type must be a string of mask names separated by a comma and no spaces between the comma and names
-      const names = d.type.split(',');
-      HS.m = [-1]
-      names.forEach((name) => {
-        var escaped_name = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const re = RegExp('^'+escaped_name+'$','gi');
-        const mask = index_regex(HS.masks, re);
-        if (mask >= 0) {
-          HS.m.push(mask);
-        }
-      })
-      //render without menu redraw
-      HS.pushState();
-      window.onpopstate();
-  }
-
 
     // Visualization code
     const renderVis = function(visType, el, id) {
@@ -1238,26 +1060,14 @@ Render.prototype = {
         'VisMatrix': infovis.renderMatrix,
         'VisBarChart': infovis.renderBarChart,
         'VisScatterplot': infovis.renderScatterplot,
-        'VisCanvasScatterplot': infovis.renderCanvasScatterplot,
-        'Other': infovis.renderOther,
-        "MaskAndPan": infovis.renderMaskAndPan,
-        "chanAndMaskandPan": infovis.renderChanAndMaskandPanHandler,
-        'multipleMasksHandler': infovis.renderMultipleMasksHandler,
-        'multipleMasksAndPan': infovis.renderMultipleMasksAndPan,
-        'multipleMasksPanChannel': infovis.renderMultipleMasksPanChannel
+        'VisCanvasScatterplot': infovis.renderCanvasScatterplot
       }[visType]
       // Select click handler based on renderer given in markdown
       const clickHandler = {
         'VisMatrix': chanAndMaskHandler,
         'VisBarChart': maskHandler,
         'VisScatterplot': arrowHandler,
-        'VisCanvasScatterplot': arrowHandler,
-        'Other': arrowHandler,
-        'MaskAndPan': MaskAndPan,
-        'chanAndMaskandPan': chanAndMaskandPanHandler,
-        'multipleMasksHandler': multipleMasksHandler,
-        'multipleMasksAndPan': multipleMasksAndPan,
-        'multipleMasksPanChannel': multipleMasksPanChannel
+        'VisCanvasScatterplot': arrowHandler
       }[visType]
       // Run infovis renderer
       const tmp = renderer(el, id, waypoint[visType], {
@@ -1310,12 +1120,6 @@ Render.prototype = {
         renderVis(visType, wid_waypoint, new_div.id);
       }
     })
-
-    // Nanostring-specific event - for adding content to a specific waypoint
-    const currentWaypointInfo = {waypointNum: HS.w, storyNum: HS.s, domElement: wid_waypoint, osd: this.osd, finish_waypoint}
-    const waypointBuildEvent = new CustomEvent('waypointBuildEvent', {
-      detail: currentWaypointInfo});
-    document.dispatchEvent(waypointBuildEvent);
 
     finish_waypoint('');
 
