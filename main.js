@@ -3119,7 +3119,6 @@ export const build_page = function(options) {
   if (!options.noHome) {
     home_el.href = options.homeUrl; 
   }
-  options.noHome = options.noHome || (options.homeUrl === false);
   osd_el.id = options.id + '-openseadragon';
   zoom_out_el.id = options.id + '-zoom-out';
   zoom_in_el.id = options.id + '-zoom-in';
