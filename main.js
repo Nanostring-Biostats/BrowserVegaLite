@@ -6,7 +6,6 @@ import { HashState } from "./state"
 import { Render } from './render'
 import { RenderOSD } from './osd'
 import * as d3 from "d3"
-import * as nanostringConfig from './nanostringStoryConfig';
 
 // Flatten an array of arrays
 const flatten = function(items) {
@@ -142,6 +141,9 @@ const arrange_images = function(viewer, tileSources, hashstate, init) {
     }
   }
 };
+
+let marker_data = [{"﻿String":"ARL13B","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=ARL13B&keywords=ARL13B"},{"﻿String":"ASMA","Alias":"A-SMA, a-SMA, alpha-SMA, α-SMA","Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=ACTA2&keywords=alpha,smooth,muscle,actin"},{"﻿String":"BANF1","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=BANF1&keywords=BANF1"},{"﻿String":"CD11B","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=ITGAM&keywords=CD11B"},{"﻿String":"CD14","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD14&keywords=CD14"},{"﻿String":"CD163","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD163&keywords=CD163"},{"﻿String":"CD19","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD19&keywords=CD19"},{"﻿String":"CD20","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=MS4A1&keywords=CD20"},{"﻿String":"CD21","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CR2&keywords=CD21"},{"﻿String":"CD3D","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD3D&keywords=CD3D"},{"﻿String":"CD4","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD4&keywords=CD4"},{"﻿String":"CD45","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=PTPRC&keywords=CD45"},{"﻿String":"CD45RB","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=PTPRC&keywords=CD45RB"},{"﻿String":"CD68","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD68&keywords=CD68"},{"﻿String":"CD8A","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD8A&keywords=CD8A"},{"﻿String":"FOXP3","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=FOXP3&keywords=FOXP3"},{"﻿String":"GFAP","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=GFAP&keywords=GFAP"},{"﻿String":"GTUBULIN","Alias":"gamma-tubulin","Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=TUBG1&keywords=gamma,tubulin"},{"﻿String":"IBA1","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=AIF1&keywords=IBA1"},{"﻿String":"KERATIN","Alias":"pan-cytokeratin, pan-keratin","Link":"https://www.genecards.org/Search/Keyword?queryString=KERATIN"},{"﻿String":"KI67","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=MKI67&keywords=KI67"},{"﻿String":"LAG3","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=LAG3&keywords=LAG3"},{"﻿String":"LAMINAC","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=LMNA&keywords=LAMIN,AC"},{"﻿String":"LAMINB","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=LMNB1&keywords=LAMINB"},{"﻿String":"PD-1","Alias":"PD1","Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=PDCD1&keywords=PD-1"},{"﻿String":"PD-L1","Alias":"PDL1","Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD274&keywords=PD-L1"},{"﻿String":"CD19","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD19&keywords=CD19"},{"﻿String":"CD14","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD14&keywords=CD11c"},{"﻿String":"CD56","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=NCAM1&keywords=CD56"},{"﻿String":"CD34","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD34&keywords=CD34"},{"﻿String":"CD44","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD44&keywords=CD34"},{"﻿String":"CD14","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD14&keywords=CD14"},{"﻿String":"CD33","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD33&keywords=CD33"},{"﻿String":"CD41","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=ITGA2B&keywords=CD41"},{"﻿String":"CD61","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=ITGB3&keywords=CD61"},{"﻿String":"CD62","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=SELP&keywords=CD62"},{"﻿String":"CD146","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=MCAM&keywords=CD146"},{"﻿String":"CD1d","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD1D&keywords=CD1d"},{"﻿String":"CD2","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD2&keywords=CD2"},{"﻿String":"CD5","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD5&keywords=cd5"},{"﻿String":"CD7","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD7&keywords=CD7"},{"﻿String":"CD9","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD9&keywords=CD9"},{"﻿String":"CD10","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=MME&keywords=CD10"},{"﻿String":"CD11A","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=ITGAL&keywords=CD11A"},{"﻿String":"CD70","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD70&keywords=CD70"},{"﻿String":"CD74","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=CD74&keywords=CD74"},{"﻿String":"CD103","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=ITGAE&keywords=CD103"},{"﻿String":"CD133","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=PROM1&keywords=CD133"},{"﻿String":"CD168","Alias":null,"Link":"https://www.genecards.org/cgi-bin/carddisp.pl?gene=HMMR&keywords=CD168"}];
+let cell_type_data = [{"﻿String":"Natural Killer Cells","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/c%C3%A9lulas/natural-killer-cells"},{"﻿String":"B Cells","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/cells/b-cells"},{"﻿String":"Basophil","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/c%C3%A9lulas/basophils"},{"﻿String":"Helper T cell","Alias":"CD4+ T Cell","Link":"https://www.immunology.org/public-information/bitesized-immunology/células/cd4-t-cells"},{"﻿String":"Cytotoxic T Cell","Alias":"CD8+ T Cell","Link":"https://www.immunology.org/public-information/bitesized-immunology/c%C3%A9lulas/cd8-t-cells"},{"﻿String":"Dendritic Cell","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/cells/dendritic-cells"},{"﻿String":"Eosinophils","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/c%C3%A9lulas/eosinophils"},{"﻿String":"Macrophage","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/c%C3%A9lulas/macrophages"},{"﻿String":"Mast Cell","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/c%C3%A9lulas/mast-cells"},{"﻿String":"Neutrophil","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/cells/neutrophils"},{"﻿String":"Regulatory T Cell","Alias":"Treg","Link":"https://www.immunology.org/public-information/bitesized-immunology/células/regulatory-t-cells-tregs"},{"﻿String":"T follicular helper cell","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/cells/t-follicular-helper-cells"},{"﻿String":"bone marrow","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/%C3%B3rganos-y-tejidos/bone-marrow"},{"﻿String":"lymph node","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/organs-and-tissues/lymph-node"},{"﻿String":"complement system","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/sistemas-y-procesos/complement-system"},{"﻿String":"phagocytosis","Alias":null,"Link":"https://www.immunology.org/public-information/bitesized-immunology/systems-and-processes/phagocytosis"}];
 
 const exhibitCSS = `
 @import url("https://fonts.googleapis.com/css?family=Hind+Vadodara:500|Overpass:200,800");
@@ -900,12 +902,9 @@ a > .minerva-root code { color: inherit; }
 .minerva-root .custom-control-label::before, .minerva-root .custom-file-label, .minerva-root .custom-select { transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
 @media (prefers-reduced-motion: reduce) { .minerva-root .custom-control-label::before, .minerva-root .custom-file-label, .minerva-root .custom-select { transition: none; } }
 .minerva-root .nav { display: flex; flex-wrap: wrap; padding-left: 0; margin-bottom: 0; list-style: none; }
-.minerva-root .all-layers { background-color: transparent; color: #007bff; text-align: left; border: none; }
-.minerva-root .all-layers:hover { color: #0056b3; border: none; }
-.minerva-root .all-layers:focus-visible, .minerva-root .all-layers:focus { outline: none; }
-.minerva-root .nav-link, .minerva-root .all-layers { display: block; padding: 0.5rem 1rem; }
-.minerva-root .nav-link:hover, .minerva-root .nav-link:focus, .minerva-root .all-layers:hover, .minerva-root .all-layers:focus  { text-decoration: none; }
-.minerva-root .nav-link.disabled, .minerva-root .all-layers.disabled { color: #6c757d; pointer-events: none; cursor: default; }
+.minerva-root .nav-link { display: block; padding: 0.5rem 1rem; }
+.minerva-root .nav-link:hover, .minerva-root .nav-link:focus { text-decoration: none; }
+.minerva-root .nav-link.disabled { color: #6c757d; pointer-events: none; cursor: default; }
 .minerva-root .nav-tabs { border-bottom: 1px solid #dee2e6; }
 .minerva-root .nav-tabs .nav-item { margin-bottom: -1px; }
 .minerva-root .nav-tabs .nav-link { border: 1px solid transparent; border-top-left-radius: 0.25rem; border-top-right-radius: 0.25rem; }
@@ -913,8 +912,8 @@ a > .minerva-root code { color: inherit; }
 .minerva-root .nav-tabs .nav-link.disabled { color: #6c757d; background-color: transparent; border-color: transparent; }
 .minerva-root .nav-tabs .nav-link.active, .minerva-root .nav-tabs .nav-item.show .nav-link { color: #495057; background-color: #fff; border-color: #dee2e6 #dee2e6 #fff; }
 .minerva-root .nav-tabs .dropdown-menu { margin-top: -1px; border-top-left-radius: 0; border-top-right-radius: 0; }
-.minerva-root .nav-pills .nav-link, .minerva-root .all-layers { border-radius: 0.25rem; }
-.minerva-root .nav-pills .nav-link.active, .minerva-root .nav-pills .show > .nav-link, .minerva-root .all-layers.active  { color: #fff; background-color: #007bff; }
+.minerva-root .nav-pills .nav-link { border-radius: 0.25rem; }
+.minerva-root .nav-pills .nav-link.active, .minerva-root .nav-pills .show > .nav-link { color: #fff; background-color: #007bff; }
 .minerva-root .nav-fill .nav-item { flex: 1 1 auto; text-align: center; }
 .minerva-root .nav-justified .nav-item { flex-basis: 0; flex-grow: 1; text-align: center; }
 .minerva-root .tab-content > .tab-pane { display: none; }
@@ -924,7 +923,7 @@ a > .minerva-root code { color: inherit; }
 .minerva-root .navbar-brand { display: inline-block; padding-top: 0.3125rem; padding-bottom: 0.3125rem; margin-right: 1rem; font-size: 1.25rem; line-height: inherit; white-space: nowrap; }
 .minerva-root .navbar-brand:hover, .minerva-root .navbar-brand:focus { text-decoration: none; }
 .minerva-root .navbar-nav { display: flex; flex-direction: column; padding-left: 0; margin-bottom: 0; list-style: none; }
-.minerva-root .navbar-nav .nav-link, .minvera-root .all-layers { padding-right: 0; padding-left: 0; }
+.minerva-root .navbar-nav .nav-link { padding-right: 0; padding-left: 0; }
 .minerva-root .navbar-nav .dropdown-menu { position: static; float: none; }
 .minerva-root .navbar-text { display: inline-block; padding-top: 0.5rem; padding-bottom: 0.5rem; }
 .minerva-root .navbar-collapse { flex-basis: 100%; flex-grow: 1; align-items: center; }
@@ -2182,8 +2181,18 @@ a.minerva-root .badge-dark:focus, a.minerva-root .badge-dark.focus { outline: 0;
 @media (max-width: 575.98px) { .minerva-root .display-4 { font-size: 2rem; margin-top: 1rem; } }
 .minerva-root .select2-results ul { color: black; }
 
+.minerva-root {
+  display: grid; 
+  grid-template-columns: 1fr; 
+  grid-template-rows: 1fr; 
+  grid-column-gap: 0px;
+  grid-row-gap: 0px; 
+  height: 100%;
+  width: 100%;
+}
+
 .minerva-root > div {
-  background-color: black;
+  grid-area: 1 / 1 / 2 / 2;
 }
 
 .minerva-root .minerva-toggle-sidebar {
@@ -2271,12 +2280,8 @@ a.minerva-root .badge-dark:focus, a.minerva-root .badge-dark.focus { outline: 0;
   width: 200px;
 }
 
-.minerva-root .minerva-legend.toggled .btn-group-vertical {
-  display: none !important;
-}
-
-.minerva-root .minerva-legend.toggled .minerva-channel-groups-legend {
-  display: none !important;
+.minerva-root .minerva-legend.toggled {
+  margin-right: -200px;
 }
 
 .minerva-root .minerva-sidebar-menu .minerva-open-sidebar {
@@ -2311,7 +2316,7 @@ a.minerva-root .badge-dark:focus, a.minerva-root .badge-dark.focus { outline: 0;
   left: 0;
   bottom: 0; */
   width: 100%;
-  height: 100vh;
+  height: 100%;
   pointer-events: fill;
   /* border: 1px solid #444; */
 }
@@ -2480,6 +2485,14 @@ a.minerva-root .badge-dark:focus, a.minerva-root .badge-dark.focus { outline: 0;
     fill : white;
 }
 
+body {
+  margin: 0;
+  height: 100vh;
+  background-color: black;
+  /* mobile viewport bug fix */
+  height: -webkit-fill-available;
+}
+
 body .tooltip {
     position: absolute;
     margin-top: 3px;
@@ -2516,21 +2529,21 @@ const exhibitHTML = `
     <div>
         <div class="minerva-legend position-absolute"
              style="pointer-events: none; top: 1rem; right: 8px">
-             <div>
-              <a class="minerva-toggle-legend p-1" href="javascript;;">
-                <i class="minerva-open-legend fas fa-chevron-left" style="font-size: 25px;"></i>
-                <i class="minerva-close-legend fas fa-chevron-right" style="font-size: 25px;"></i>
-              </a>
-              <div class="btn-group-vertical bg-trans p-2"
-                    style="display:inline-block; vertical-align:top;">
-                   <ul class="minerva-channel-legend list-unstyled m-0"></ul>
-                   <div class="p-1 minerva-only-3d">
-                     Depth:
-                   </div>
-                   <div style="text-align: right;">
-                     <span class="minerva-depth-legend"> </span>
-                   </div>
-               </div> 
+            <div>
+                <div class="btn-group-vertical bg-trans p-2"
+                     style="display:inline-block; vertical-align:top;">
+                    <a class="minerva-toggle-legend p-1" href="javascript;;">
+                        <i class="minerva-open-legend fas fa-chevron-left" style="font-size: 25px;"></i>
+                        <i class="minerva-close-legend fas fa-chevron-right" style="font-size: 25px;"></i>
+                    </a>
+                    <ul class="minerva-channel-legend list-unstyled m-0"></ul>
+                    <div class="p-1 minerva-only-3d">
+                      Depth:
+                    </div>
+                    <div style="text-align: right;">
+                      <span class="minerva-depth-legend"> </span>
+                    </div>
+                </div> 
                 <div class="minerva-channel-groups-legend nav flex-column nav-pills p-2 bg-trans"
                      style="display:inline-block; vertical-align:top;
                      pointer-events: all; overflow-y: scroll; max-height: 80vh;">
@@ -2633,11 +2646,13 @@ const exhibitHTML = `
             </div>
         </div>
     </div>
+
     <div>
         <div class="d-none">
             <div class="minerva-arrow-overlay">
               <div class="minerva-arrowhead-image">
                 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
     <svg
        xmlns:dc="http://purl.org/dc/elements/1.1/"
        xmlns:cc="http://creativecommons.org/ns#"
@@ -2714,9 +2729,11 @@ const exhibitHTML = `
            sodipodi:nodetypes="scccss" />
       </g>
     </svg>
+
               </div>
               <div class="minerva-arrow-image">
                 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
     <svg
        xmlns:dc="http://purl.org/dc/elements/1.1/"
        xmlns:cc="http://creativecommons.org/ns#"
@@ -2793,12 +2810,14 @@ const exhibitHTML = `
            sodipodi:nodetypes="cccccccc" />
       </g>
     </svg>
+
               </div>
               <div class="minerva-arrow-text">
                 <div class="minerva-arrow-label p-3 bg-trans" style="max-width: 200px;">
                 </div>
               </div>
             </div>
+
             <form class="form minerva-save_edits_form">
                 <div class="input-group">
                     <div style="width: 100%; margin-bottom: 5px">
@@ -2827,6 +2846,8 @@ const exhibitHTML = `
                 </div>
             </form>
         </div>
+
+
         <div class="minerva-password_modal modal fade" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -2834,6 +2855,7 @@ const exhibitHTML = `
                         <h2 class="modal-title">Minerva Password</h2>
                     </div>
                     <div class="modal-body">
+
                         <form class="form">
                             <div class="form-group">
                                 <input type=password class="form-control" name="p">
@@ -2844,6 +2866,8 @@ const exhibitHTML = `
                 </div>
             </div>
         </div>
+
+
         <div class="minerva-edit_description_modal modal fade" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content text-dark">
@@ -2854,6 +2878,7 @@ const exhibitHTML = `
                         </button>
                     </div>
                     <div class="modal-body">
+
                         <form class="form">
                             <div class="form-group text-bold">
                                 <label> Enter a description for the selected region. </label>
@@ -2866,6 +2891,7 @@ const exhibitHTML = `
                 </div>
             </div>
         </div>
+
         <div class="minerva-welcome_modal modal fade" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content text-dark">
@@ -2912,6 +2938,7 @@ const exhibitHTML = `
                 </div>
             </div>
         </div>
+
         <div class="minerva-copy_link_modal modal fade" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content text-dark">
@@ -2939,6 +2966,7 @@ const exhibitHTML = `
                 </div>
             </div>
         </div>
+
         <div class="minerva-all-overlays d-none">
         </div>
     </div>
@@ -3057,9 +3085,23 @@ const build_page_with_exhibit = function(exhibit, options) {
   arrange_images(viewer, tileSources, hashstate, init);
 
   return viewer;
-}
+};
 
 export const build_page = function(options) {
+
+  if (Array.isArray(options.markerData)) {
+    marker_data = options.markerData;
+  }
+  if (Array.isArray(options.cellTypeData)) {
+    cell_type_data = options.cellTypeData;
+  }
+  // define the marker and cell type links table
+  const marker_maps = get_links_alias(marker_data);
+  options.marker_links_map = marker_maps[0];
+  options.marker_alias_map = marker_maps[1];
+  const cell_type_maps = get_links_alias(cell_type_data);
+  options.cell_type_links_map = cell_type_maps[0];
+  options.cell_type_alias_map = cell_type_maps[1];
 
   // add CSS to the document
   var linkElement1 = document.createElement('link');
@@ -3108,4 +3150,5 @@ export const build_page = function(options) {
   else {
     return Promise.resolve(build_page_with_exhibit(exhibit, options));
   }
+
 };
