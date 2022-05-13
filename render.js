@@ -575,6 +575,11 @@ Render.prototype = {
     const minimal_sidebar = !edit && HS.totalCount == 1 && !decode(HS.d);
     classOrNot(prefix+'.minerva-sidebar-menu', minimal_sidebar, 'minimal');
     displayOrNot(prefix+'.minerva-welcome-nav', !minimal_sidebar);
+    // Disable sidebar if no content
+    if (minimal_sidebar && noHome) {
+      classOrNot(prefix+'.minerva-sidebar-menu', true, 'toggled');
+      displayOrNot(prefix+'.minerva-toggle-sidebar', false);
+    }
 
     // H&E should not display number of cycif markers
     const is_h_e = HS.group.Name == 'H&E';
@@ -825,6 +830,26 @@ Render.prototype = {
       }
     }
 
+    var moreEl = document.createElement('a');
+    if (selected && show_more && s_w) {
+      const opacity = 'opacity: ' +  + ';';
+      moreEl = Object.assign(moreEl, {
+        className : 'text-white',
+        style: 'position: absolute; right: 5px;',
+        href: 'javascript:;',
+        innerText: 'MORE',
+      });
+      aEl.appendChild(moreEl);
+
+      // Update Waypoint
+      $(moreEl).click(this, function(e) {
+        HS.s = s_w[0];
+        HS.w = s_w[1];
+        HS.pushState();
+        window.onpopstate();
+      });
+    }
+
     // Append channel group to element
     el.appendChild(aEl);
     
@@ -985,6 +1010,7 @@ Render.prototype = {
       }
     })();
 
+
     // All categories of possible visualization types
     const allVis = ['VisMatrix', 'VisBarChart', 'VisScatterplot', "VisCanvasScatterplot", "Other", "MaskAndPan", "chanAndMaskandPan", "multipleMasksHandler", "multipleMasksAndPan", "multipleMasksPanChannel"];
     
@@ -1061,12 +1087,18 @@ Render.prototype = {
           HS.m.push(mask);
         }
       })
-      const channelsList = HS.cgs[0].Channels
-      const channelIndex = channelsList.indexOf(chan);
-      if (channelIndex >= 0) {
-        HS.g = channelIndex + 1;
-      } else {
-        HS.g = 0
+
+      const c = index_name(HS.cgs, chan);
+      if (c >= 0) {
+        HS.g = c;
+      }
+      else {
+        var escaped_chan = chan.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re_chan = RegExp(escaped_chan,'gi');
+        const r_c = index_regex(HS.cgs, re_chan);
+        if (r_c >= 0) {
+          HS.g = r_c;
+        }
       }
       // render without menu redraw
       HS.pushState();
@@ -1093,12 +1125,17 @@ Render.prototype = {
         HS.m = [-1, m];
       }
       
-      const channelsList = HS.cgs[0].Channels
-      const channelIndex = channelsList.indexOf(chan)
-      if (channelIndex >= 0) {
-        HS.g = channelIndex + 1;
-      } else {
-        HS.g = 0
+      const c = index_name(HS.cgs, chan);
+      if (c >= 0) {
+        HS.g = c;
+      }
+      else {
+        var escaped_chan = chan.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re_chan = RegExp(escaped_chan,'gi');
+        const r_c = index_regex(HS.cgs, re_chan);
+        if (r_c >= 0) {
+          HS.g = r_c;
+        }
       }
 
       HS.pushState();
@@ -1116,13 +1153,19 @@ Render.prototype = {
         HS.m = [-1, m];
       }
       
-      const channelsList = HS.cgs[0].Channels
-      const channelIndex = channelsList.indexOf(chan)
-      if (channelIndex >= 0) {
-        HS.g = channelIndex + 1;
-      } else {
-        HS.g = 0
+      const c = index_name(HS.cgs, chan);
+      if (c >= 0) {
+        HS.g = c;
       }
+      else {
+        var escaped_chan = chan.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re_chan = RegExp(escaped_chan,'gi');
+        const r_c = index_regex(HS.cgs, re_chan);
+        if (r_c >= 0) {
+          HS.g = r_c;
+        }
+      }
+
       HS.pushState();
       window.onpopstate();
     }
