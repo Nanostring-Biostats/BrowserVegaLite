@@ -4,7 +4,7 @@ export function getConfig() {
     return config;
 }
 
-const SUPPORTED_STORY_TYPES = ['colon', 'lymph node', 'mouse brain', 'human brain', 'kidney', 'pancreas'];
+const SUPPORTED_STORY_TYPES = ['colon', 'lymph node', 'mouse brain', 'human brain', 'kidney', 'pancreas', 'mousedev'];
 
 function loadNanostringStory(storyType) {
     const storyFile = (() => {
@@ -21,6 +21,8 @@ function loadNanostringStory(storyType) {
           return require('./nanostringKidney');
         case 'pancreas':
           return require('./nanostringPancreas');
+        case 'mousedev':
+          return require('./nanostringMouseDev');
         default:
           throw new Error('unsupported story type');
       }
