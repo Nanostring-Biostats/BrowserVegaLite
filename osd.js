@@ -347,7 +347,7 @@ RenderOSD.prototype = {
   addPolygon: function(id, polygon) {
     var svg_overlay = this.svg_overlay;
 
-    // for story building purposes - uncomment below to capture the Polygon object
+    // for story building purposes - uncomment below to capture the Polygon object (megan, comment 5/13 when done)
     // console.log(polygon);
     d3.select('#' + id).remove();
     var selPoly = svg_overlay.selectAll(id).data([polygon]);
