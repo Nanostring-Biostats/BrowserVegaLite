@@ -7,9 +7,10 @@ const slideVentricle = require('./mouseDevObjects/slideVentricle.json');
 const slideEsophagus = require('./mouseDevObjects/slideEsophagus.json');
 const slideLung = require('./mouseDevObjects/slideLung.json');
 const slidePancreas = require('./mouseDevObjects/slidePancreas.json');
+const slidePlacenta = require('./mouseDevObjects/slidePlacenta.json');
 
 
-import { addEListener, addMask } from './nanostringUtils';
+import { addEListener, addSlidePolygon } from './nanostringUtils';
 
 // Polygon objects for adding drawings over slide image
 const allSlidePolygons = {
@@ -64,7 +65,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         // This must go before the svg, if applicable, or it will break the functionality
         const desc_html = document.querySelector('.minerva-viewer-waypoint').innerHTML;
         // With the /g tag, it will replace all instances of the word 'key'
-        const new_html = desc_html.replace(/placenta/g,'<button id="placentaClick">'+'placenta'+'</button>');
+        const new_html = desc_html.replace(/placenta/g,'<button id="placentaClick">'+'placenta and yolk sack'+'</button>');
         document.querySelector('.minerva-viewer-waypoint').innerHTML = new_html;
 
 
@@ -72,6 +73,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         placentaButton.addEventListener("click", () => {
             osd.viewer.viewport.panTo({x: 0.32, y: 0.25});
             osd.viewer.viewport.zoomTo('5.6315');
+            addSlidePolygon("placentaPolygon", slidePlacenta, osd);
         });
 
         // svg mouse dev cartoon
@@ -115,7 +117,7 @@ document.addEventListener('waypointBuildEvent', function(e) {
     }
 
     // Remove polygons and overlays when the waypoint is changed
-    const overlayIds = ['#slideTrachea','#slideMidgut','#slideStomach', '#slideAtrium', '#slideBrain','#slideVentricle','#slideEsophagus','#slideLung','#slidePancreas']
+    const overlayIds = ['#slideTrachea','#slideMidgut','#slideStomach', '#slideAtrium', '#slideBrain','#slideVentricle','#slideEsophagus','#slideLung','#slidePancreas', '#placentaPolygon']
     overlayIds.forEach((id) => {
         if (document.querySelector(id)) {
             document.querySelector(id).remove();
