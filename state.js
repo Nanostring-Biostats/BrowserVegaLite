@@ -193,6 +193,7 @@ export const HashState = function(exhibit, options) {
   this.customPushState = options.customPushState || false;
   this.customWelcome = options.customWelcome || "";
   this.hideWelcome = options.hideWelcome || false;
+  this.noHome = options.noHome || false;
 
   this.state = {
     buffer: {
@@ -206,12 +207,12 @@ export const HashState = function(exhibit, options) {
     g: 0,
     s: 0,
     a: [-100, -100],
-    v: [0.5, 0.5, 0.5],
+    v: [1e-100, 0.5, 0.5],
     o: [-100, -100, 1, 1],
     p: [],
     name: '',
     description: '',
-  edit: false,
+    edit: false,
     drawing: 0
   };
 
@@ -823,7 +824,7 @@ HashState.prototype = {
 
     // Three types of empty story
     const name = {
-      'explore': 'Free Explore',
+      'explore': 'Appendix',
       'tag': 'Shared Link',
       'outline': 'Introduction'
     }[mode];
@@ -839,10 +840,18 @@ HashState.prototype = {
       'tag': this.active_masks.filter(mask => mask.Name).map(mask => mask.Name),
     }[mode];
 
+    const waypoint_text = (() => {
+      if (mode === 'explore') {
+        return this.exhibit.Appendix
+      } else {
+          return ''
+      }
+    })();
+
     // Empty story object of a single waypoint
     return {
       Mode: mode,
-      Description: '',
+      Description: waypoint_text,
       Name: name || 'Story',
       Waypoints: [remove_undefined({
         Mode: mode,
@@ -928,19 +937,21 @@ HashState.prototype = {
         window.onpopstate();
       }
       // Show welcome page if no hash present
-      else if (this.isMissingHash && !this.hideWelcome) {
+      else if (this.isMissingHash) {
+        if (!this.hideWelcome) {
+          const welcome = $(this.el).find('.minerva-welcome_modal');
+          if (!this.customWelcome) {
+            const channel_count = welcome.find('.minerva-channel_count')[0];
+            channel_count.innerText = this.channels.length;
+          }
+          else {
+            const welcome_body = welcome.find('.modal-body')[0];
+            welcome_body.innerHTML = this.customWelcome;
+          }
+          welcome.modal('show');
+        }
+        // Set default story even if welcome hidden
         this.s = 0; 
-        const welcome = $(this.el).find('.minerva-welcome_modal');
-        if (!this.customWelcome) {
-          const channel_count = welcome.find('.minerva-channel_count')[0];
-          channel_count.innerText = this.channels.length;
-        }
-        else {
-          const welcome_body = welcome.find('.modal-body')[0];
-          welcome_body.innerHTML = this.customWelcome;
-        }
-        welcome.modal('show');
-
         this.pushState();
         window.onpopstate();
       }
