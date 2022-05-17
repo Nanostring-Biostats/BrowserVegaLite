@@ -38,7 +38,7 @@ export function panZoom(osd, svgObj, storyNum, waypointNum) {
  * @param {object} fileName : name of the object that the file is assigned to when imported into the story-specific file
  * @param {object} osd : The osd object in use for building the story - passed from the waypoint build event
  */
-function addSlidePolygon(polygonID, fileName, osd){
+export function addSlidePolygon(polygonID, fileName, osd){
     if (!document.querySelector(`#${polygonID}`)) {
         osd.addPolygon(polygonID, fileName);
     } else {
