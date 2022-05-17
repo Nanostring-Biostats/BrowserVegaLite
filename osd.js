@@ -558,5 +558,6 @@ RenderOSD.prototype = {
     const viewport = this.viewer.viewport;
     viewport.panTo(HS.viewport.pan);
     viewport.zoomTo(HS.viewport.scale);
+    viewport.applyConstraints(true);
   }
 }
