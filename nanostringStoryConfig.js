@@ -6,6 +6,7 @@ export function getConfig() {
 
 const SUPPORTED_STORY_TYPES = ['colon', 'lymph node', 'mouse brain', 'human brain', 'kidney', 'pancreas'];
 
+
 function loadNanostringStory(storyType) {
     const storyFile = (() => {
       switch (storyType) {

@@ -348,7 +348,14 @@ const grossDetailColonicPatch = {
     ROIBox: [{overlay: {x: 0.4398, y: 0.5893, width: 0.033, height: 0.02}}, {overlay: {x: 0.3505, y: 0.52, width: 0.033, height: 0.026}}, {overlay: {x: 0.3679, y: 0.239, width: 0.035, height: 0.024}}],
 }
 
-
+/**
+ * Add text, images, and clickhandlers to a specific waypoint.
+ * @param {number} waypointNum : The number of the current waypoint 
+ * @param {number} storyNum : The story number for the current waypoint
+ * @param {object} domElement : The DOM element (mninerva-viewer-waypoint) to act upon
+ * @param {object} osd The osd object in use for building the story - passed from the waypoint build event
+ * @param {function} finish_waypoint : finishes building the waypoint
+ */
 function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) {
     const showdown_text = new showdown.Converter({tables: true});
 
@@ -429,9 +436,11 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
     }
 }
 
-// Add cartoon image or text to a specific waypoint
-// Change the number that HS.w is equal to based on which waypoint the image needs to appear on.
-// If the waypoint is the first one after the Table of Contents HS.s must also be set, otherwise, it appears in the TOC too
+/**
+ * Add images, text, and click handlers to specific waypoints in the minerva story
+ * Recieves the waypoint number, story number, wayoint DOM element, osd object, and finish_wayoint function from the context of the 
+ *      fillWaypointView function 
+ */
 document.addEventListener('waypointBuildEvent', function(e) {
     const {waypointNum, storyNum, domElement, osd, finish_waypoint} = e.detail;
     const width = window.innerWidth;

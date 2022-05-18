@@ -221,6 +221,14 @@ const allSlidePolygons = {
     }
 }
 
+/**
+ * Add text, images, and clickhandlers to a specific waypoint.
+ * @param {number} waypointNum : The number of the current waypoint 
+ * @param {number} storyNum : The story number for the current waypoint
+ * @param {object} domElement : The DOM element (mninerva-viewer-waypoint) to act upon
+ * @param {object} osd The osd object in use for building the story - passed from the waypoint build event
+ * @param {function} finish_waypoint : finishes building the waypoint
+ */
 function buildWaypointCartoon(waypointNum, storyNum, domElement, osd, finish_waypoint) {
     const svgNS = 'http://www.w3.org/2000/svg';
     const showdown_text = new showdown.Converter({tables: true});
@@ -372,6 +380,11 @@ function buildWaypointCartoon(waypointNum, storyNum, domElement, osd, finish_way
     }
 };
 
+/**
+ * Add images, text, and click handlers to specific waypoints in the minerva story
+ * Recieves the waypoint number, story number, wayoint DOM element, osd object, and finish_wayoint function from the context of the 
+ *      fillWaypointView function 
+ */
 document.addEventListener('waypointBuildEvent', function(e) {
     const {waypointNum, storyNum, domElement, osd, finish_waypoint} = e.detail;
     window.waypointAttr = {
