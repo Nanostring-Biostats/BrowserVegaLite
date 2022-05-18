@@ -1018,7 +1018,6 @@ Render.prototype = {
       }
     })();
 
-
     // All categories of possible visualization types
     const allVis = ['VisMatrix', 'VisBarChart', 'VisScatterplot', "VisCanvasScatterplot", "MaskAndPan", "chanAndMaskandPan", "multipleMasksHandler", "multipleMasksAndPan", "multipleMasksPanChannel"];
     
