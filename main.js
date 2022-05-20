@@ -2667,8 +2667,8 @@ const exhibitHTML = `
        xmlns="http://www.w3.org/2000/svg"
        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-       width="48"
-       height="51.69223"
+       width="24"
+       height="25"
        viewBox="0 0 12.711991 13.676902"
        version="1.1"
        id="svg8"
@@ -2748,8 +2748,8 @@ const exhibitHTML = `
        xmlns="http://www.w3.org/2000/svg"
        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-       width="122.79958"
-       height="51.401581"
+       width="40"
+       height="35"
        viewBox="0 0 32.521399 13.600001"
        version="1.1"
        id="svg8"
@@ -2819,7 +2819,7 @@ const exhibitHTML = `
 
               </div>
               <div class="minerva-arrow-text">
-                <div class="minerva-arrow-label p-3 bg-trans" style="max-width: 200px;">
+                <div class="minerva-arrow-label bg-trans" style="max-width: 200px;">
                 </div>
               </div>
             </div>
