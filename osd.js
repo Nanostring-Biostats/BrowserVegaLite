@@ -155,6 +155,7 @@ RenderOSD.prototype = {
       const position = THIS.normalize(e.position);
       //trigger event
       var imageCoordinates =  THIS.viewer.viewport.viewportToImageCoordinates(position.x, position.y);
+      //console.log(imageCoordinates) // for getting coordinates on image megan
       THIS.eventHandler.trigger(THIS.eventHandler.events.osdClickEvent, {'x': imageCoordinates.x, "y" : imageCoordinates.y});
 
       if (HS.drawType == "lasso") {
@@ -348,7 +349,7 @@ RenderOSD.prototype = {
     var svg_overlay = this.svg_overlay;
 
     // for story building purposes - uncomment below to capture the Polygon object (megan, comment 5/13 when done)
-     console.log(polygon);
+    //console.log(polygon);
     d3.select('#' + id).remove();
     var selPoly = svg_overlay.selectAll(id).data([polygon]);
     selPoly.enter().append("polygon")
