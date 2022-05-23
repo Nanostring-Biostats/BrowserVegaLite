@@ -65,7 +65,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         // This must go before the svg, if applicable, or it will break the functionality
         const desc_html = document.querySelector('.minerva-viewer-waypoint').innerHTML;
         // With the /g tag, it will replace all instances of the word 'key'
-        const new_html = desc_html.replace(/placenta/g,'<button id="placentaClick">'+'placenta and yolk sack'+'</button>');
+        const new_html = desc_html.replace(/placenta and yolk sac/g,'<button id="placentaClick">'+'placenta and yolk sac'+'</button>');
         document.querySelector('.minerva-viewer-waypoint').innerHTML = new_html;
 
 
