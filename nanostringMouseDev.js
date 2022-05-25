@@ -58,6 +58,31 @@ const allSlidePolygons = {
     }
 }
 
+// Clickability on both heatmaps 
+// I don't know why I don't need to specify maskName, channel, or ROIBox.
+const heatmapStrucs = {
+    gutE9rect: {
+        panCoord: {x: 0.25, y: 0.25},
+        zoomRatio: 1
+    },
+    gutE11rect: {
+        panCoord: {x: 0.75, y: 0.125},
+        zoomRatio: 1
+    },
+    gutE13rect: {
+        panCoord: {x: 0.25, y: 0.75},
+        zoomRatio: 1
+    },
+    gutE15rect: {
+        panCoord: {x: 0.75, y: 0.75},
+        zoomRatio: 1
+    },
+    heartRect: {
+        panCoord: {x: 0.7876, y: 0.1364},
+        zoomRatio: 4.6183
+    }
+}
+
 function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) {
     const showdown_text = new showdown.Converter({tables: true});
 
@@ -97,6 +122,50 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
 
     }
 
+    else if (waypointNum == 3 && storyNum == 1) {
+        // svg heart heatmap
+        const svgContainer = document.createElement('object');
+        svgContainer.data = 'svg/gut_heatmap.svg'
+        svgContainer.type = 'image/svg+xml'
+        svgContainer.id = 'gutHeatmap'
+        // Add interactivity to each column in the heatmap SVG file. Columns have ids that exactly match the object keys
+        svgContainer.onload = function (){
+            const doc = this.getSVGDocument();
+            Object.entries(heatmapStrucs).forEach(([key, val]) => {
+                const el = doc.querySelector(`#${key}`);
+                if (el) {
+                    // I don't know that 'addmaskandChannel' is best here
+                    addEListener(osd, val, el, ['addMaskandChannel', 'panZoom'], storyNum, waypointNum)
+                }
+            });
+            finish_waypoint('')
+        }
+        
+        
+        domElement.appendChild(svgContainer);
+    }
+
+    else if (waypointNum == 6 && storyNum == 1) {
+        // svg heart heatmap
+        const svgContainer = document.createElement('object');
+        svgContainer.data = 'svg/heart_MOCA_heatmap.svg'
+        svgContainer.type = 'image/svg+xml'
+        svgContainer.id = 'heartHeatmap'
+        // Add interactivity to each column in the heatmap SVG file. Columns have ids that exactly match the object keys
+        svgContainer.onload = function (){
+            const doc = this.getSVGDocument();
+            Object.entries(heatmapStrucs).forEach(([key, val]) => {
+                const el = doc.querySelector(`#${key}`);
+                if (el) {
+                    // I don't know that 'addmaskandChannel' is best here
+                    addEListener(osd, val, el, ['addMaskandChannel', 'panZoom'], storyNum, waypointNum)
+                }
+            });
+            finish_waypoint('')
+        }
+        domElement.appendChild(svgContainer);
+                
+    }
 
 };
 
