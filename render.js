@@ -838,25 +838,26 @@ Render.prototype = {
       }
     }
 
-    var moreEl = document.createElement('a');
-    if (selected && show_more && s_w) {
-      const opacity = 'opacity: ' +  + ';';
-      moreEl = Object.assign(moreEl, {
-        className : 'text-white',
-        style: 'position: absolute; right: 5px;',
-        href: 'javascript:;',
-        innerText: 'MORE',
-      });
-      aEl.appendChild(moreEl);
+    // Megan removed 5/31/22 trying to eliminate MORE button.
+    // var moreEl = document.createElement('a');
+    // if (selected && show_more && s_w) {
+    //   const opacity = 'opacity: ' +  + ';';
+    //   moreEl = Object.assign(moreEl, {
+    //     className : 'text-white',
+    //     style: 'position: absolute; right: 5px;',
+    //     href: 'javascript:;',
+    //     innerText: 'MORE',
+    //   });
+    //   aEl.appendChild(moreEl);
 
-      // Update Waypoint
-      $(moreEl).click(this, function(e) {
-        HS.s = s_w[0];
-        HS.w = s_w[1];
-        HS.pushState();
-        window.onpopstate();
-      });
-    }
+    //   // Update Waypoint
+    //   $(moreEl).click(this, function(e) {
+    //     HS.s = s_w[0];
+    //     HS.w = s_w[1];
+    //     HS.pushState();
+    //     window.onpopstate();
+    //   });
+    // }
 
     // Append channel group to element
     el.appendChild(aEl);
