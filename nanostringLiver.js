@@ -1,84 +1,4 @@
 import { addEListener } from './nanostringUtils';
-const slideCortex = require('./humanBrainObjects/cortex.json');
-const slideHippocampus = require('./humanBrainObjects/hippocampus.json');
-const slideWhiteMatter = require('./humanBrainObjects/whiteMatter.json');
-
-const allROIs = {
-    // best-in-class Cortical Layer I
-    r001: {
-        panCoord: {x: 0.2893, y: 0.6163},
-        zoomRatio: 5.6315,
-        ROIBox: [{overlay: {x: 0.2731, y: 0.5968, width: 0.0324, height: 0.0392}}],
-        maskName: ["Cortical layer I"]
-    },
-    // best-in-class Cortical Layer II/III
-    r003: {
-        panCoord: {x: 0.3148, y: 0.6090},
-        zoomRatio: 5.6315,
-        ROIBox: [{overlay: {x: 0.283, y: 0.5894, width: 0.0473, height: 0.044}}],
-        maskName: ["Cortical layer II/III"]
-    },
-    // best-in-class Cortical Layer IV
-    r029: {
-        panCoord: {x: 0.4158, y: 0.6929},
-        zoomRatio: 5.6315,
-        ROIBox: [{overlay: {x: 0.3995, y: 0.6769, width: 0.0326, height: 0.0320}}],
-        maskName: ["Cortical layer IV"]
-    },
-    // best-in-class Cortical Layer V
-    r025: {
-        panCoord: {x: 0.3396, y: 0.5500},
-        zoomRatio: 5.6315,
-        ROIBox: [{overlay: {x: 0.3238, y: 0.5346, width: 0.0317, height: 0.0308}}],
-        maskName: ["Cortical layer V"]
-    },
-    // best-in-class Cortical Layer V (GFAP)
-    r033GFAP: {
-        panCoord: {x: 0.2903, y: 0.4578},
-        zoomRatio: 5.6315,
-        ROIBox: [{overlay: {x: 0.2742, y: 0.4392, width: 0.0321, height: 0.0371}}],
-        maskName: ["Cortical layer V - GFAP+"]
-    },
-    // best-in-class Cortical Layer V (Iba1)
-    r033Iba1: {
-        panCoord: {x: 0.2903, y: 0.4578},
-        zoomRatio: 5.6315,
-        ROIBox: [{overlay: {x: 0.2742, y: 0.4392, width: 0.0321, height: 0.0371}}],
-        maskName: ["Cortical layer V - Iba1+"]
-    },
-    // best-in-class Cortical Layer V (Neuropil)
-    r033Neuropil: {
-        panCoord: {x: 0.2903, y: 0.4578},
-        zoomRatio: 5.6315,
-        ROIBox: [{overlay: {x: 0.2742, y: 0.4392, width: 0.0321, height: 0.0371}}],
-        maskName: ["Cortical layer V - Neuropil"]
-    },
-    // best-in-class Cortical Layer V (NeuN+)
-    r033NeuN: {
-        panCoord: {x: 0.2903, y: 0.4578},
-        zoomRatio: 5.6315,
-        ROIBox: [{overlay: {x: 0.2742, y: 0.4392, width: 0.0321, height: 0.0371}}],
-        maskName: ["Cortical layer V - NeuN+"]
-    },
-}
-
-
-const allPolygons = {
-    cortexPolygon: {
-        file: slideCortex,
-        polygonID: 'slideCortex'
-    },
-
-    hippocampusPolygon: {
-        file: slideHippocampus,
-        polygonID: 'slideHippocampus'
-    },
-
-    whiteMatterPolygon: {
-        file: slideWhiteMatter,
-        polygonID: 'slideWhiteMatter'
-    }
-}
 
 /**
  * Add text, images, and clickhandlers to a specific waypoint.
@@ -110,18 +30,67 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         domElement.appendChild(svgContainer);
     }
     else if (waypointNum === 1 && storyNum === 1) {
-        // This must go before the svg, if applicable, or it will break the functionality
-        const desc_html = document.querySelector('.minerva-viewer-waypoint').innerHTML;
-        // With the /g tag, it will replace all instances of the word 'key'
-        const new_html = desc_html.replace(/Liver lobular zones/g,'<button id="zone1Click">'+'Liver lobular zones'+'</button>');
-        document.querySelector('.minerva-viewer-waypoint').innerHTML = new_html;
-
-        const zone1Button = document.querySelector('#zone1Click');
-        zone1Button.addEventListener("click", () => {
-            osd.viewer.viewport.panTo({x: 0.32, y: 0.28});
-            osd.viewer.viewport.zoomTo('5.6315');
-            addSlidePolygon("placentaPolygon", slidePlacenta, osd);
-        });
+        const arrayLinks = [
+            {
+                text: "Liver lobular zones",
+                id: "zoneClick",
+                panTo: {
+                    x: 0.314,
+                    y: 0.283
+                },
+                zoomTo: 7
+            },
+            {
+                text: "Portal triad",
+                id: "portalClick",
+                panTo: {
+                    x: 0.258,
+                    y: 0.394
+                },
+                zoomTo: 18
+            },
+            {
+                text: "Central Vein",
+                id: "centralClick",
+                panTo: {
+                    x: 0.337,
+                    y: 0.544
+                },
+                zoomTo: 18
+            },
+            {
+                text: "Kupffer cells",
+                id: "kupfferClick",
+                panTo: {
+                    x: 0.215,
+                    y: 0.382
+                },
+                zoomTo: 18
+            },
+            {
+                text: "Sinusoids and Steller cells",
+                id: "sinusoidClick",
+                panTo: {
+                    x: 0.251,
+                    y: 0.284
+                },
+                zoomTo: 18
+            },
+        ]
+        let desc_html = document.querySelector('.minerva-viewer-waypoint').innerHTML;
+        arrayLinks.forEach(function(attrs) {
+            const reg = new RegExp('<li>'+attrs.text, "g")
+            desc_html = desc_html.replace(reg,`<li><button id="${attrs.id}">${attrs.text}</button>`);
+        })
+        document.querySelector('.minerva-viewer-waypoint').innerHTML = desc_html;
+        arrayLinks.forEach(function(attrs) {
+            const button = document.querySelector('#'+attrs.id);
+            button.addEventListener("click", () => {
+                osd.viewer.viewport.panTo({x: attrs.panTo.x, y: attrs.panTo.y});
+                osd.viewer.viewport.zoomTo(attrs.zoomTo);
+                // addSlidePolygon("placentaPolygon", slidePlacenta, osd);
+            });
+        })
 
         const svgContainer = document.createElement('object');
         svgContainer.data = 'img/DetailedLiverAnatomy.svg'
