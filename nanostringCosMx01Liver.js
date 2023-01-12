@@ -8,80 +8,75 @@ import { addEListener, addSlidePolygon } from './nanostringUtils';
 // Of course, we also want to set the pan and zoom coors, which would be required for both
 const liverStrucs = {
     rectCholangiocyte: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
         maskName: ["PV cells"],
         channel: "PanCK"
     },
     rectKupfferCell: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.24932159113519123, y: 0.1862733131195039 },
         zoomRatio: 3.3229,
         maskName: ["Immune cells"],
-        channel: "DNA"
+        channel: "DNA",
+        ROIBox: [{ overlay: { x: 0.1787, y: 0.1224, width: 0.1388, height: 0.1333 } }]
     },
     rectHepaticStellateCell: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
         maskName: ["PV cells"],
         channel: "DNA"
     },
     rectPlasmaCell: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
         maskName: ["Immune cells"],
         channel: "DNA"
     },
     rectBCell: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
         maskName: ["Immune cells"],
         channel: "DNA"
     },
     rectTCells: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
         maskName: ["Immune cells"],
         channel: "DNA"
     },
     rectVascularEndothelialCell: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
-        maskName: ["PV cells"],
+        maskName: ["PV cells", "CV cell type (Central.venous.LSECs)"],
         channel: "DNA"
     },
     rectNKLikeCell: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
         maskName: ["Immune cells"],
         channel: "DNA"
     },
-    rectArterialEndothelialCell: {
-        panCoord: { x: 0.159, y:0.0902 },
-        zoomRatio: 3.3229,
-        maskName: ["PV cells"],
-        channel: "DNA"
-    },
     rectHepatocyte: {
         panCoord: { x: 0.2935, y: 0.2105 },
-        zoomRatio: 6.0509,
-        maskName: ["Hepatocyte cell types"],
+        zoomRatio: 2.0264,
+        maskName: ["Hepatocytes cell types"],
         channel: "All markers",
-        ROIBox: [{overlay: {x: 0.2069, y: 0.0961, width: 0.1776, height: 0.1852}}]
+        ROIBox: [{ overlay: { x: 0.2069, y: 0.0961, width: 0.1776, height: 0.1852 } }]
     },
     rectInflammatoryMacrophage: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
         maskName: ["Immune cells"],
         channel: "DNA"
     },
     rectSinusoidalEndothelialCell: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
-        maskName: ["PV cells"],
+        maskName: ["PV cells", "CV cell type (Central.venous.LSECs)"],
         channel: "DNA"
     },
     rectBileDuctCanaliculus: {
-        panCoord: { x: 0.159, y:0.0902 },
+        panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
         maskName: ["FOVs"],
         channel: "All markers"
@@ -92,20 +87,14 @@ const liverStrucs = {
         maskName: ["FOVs"],
         channel: "All markers"
     },
-    rectHepaticArtery: {
-        panCoord: { x: 0.159, y:0.0902 },
-        zoomRatio: 3.3229,
-        maskName: ["FOVs"],
-        channel: "All markers"
-    },
     rectPortalVein: {
-        panCoord: {x: 0.2107, y: 0.0853},
+        panCoord: { x: 0.2107, y: 0.0853 },
         zoomRatio: 7.3589,
         maskName: ["FOVs"],
         channel: "All markers"
     },
     rectBileDuct: {
-        panCoord: {x: 0.1656, y: 0.0694},
+        panCoord: { x: 0.1656, y: 0.0694 },
         zoomRatio: 17.1726,
         maskName: ["FOVs"],
         channel: "All markers"
@@ -114,13 +103,13 @@ const liverStrucs = {
         panCoord: { x: 0.4696, y: 0.5131 },
         zoomRatio: 2.7691,
         maskName: ["Hepatocytes cell types"],
-        channel: "CK8_18"
+        channel: "CK8/18"
     },
     rectZone3: {
         panCoord: { x: 0.4696, y: 0.5131 },
         zoomRatio: 2.7681,
         maskName: ["Hepatocytes cell types"],
-        channel: "CK8_18"
+        channel: "CK8/18"
     }
 
 }
@@ -131,9 +120,9 @@ const liverStrucs = {
 // rectangle that encircles the entire slide.
 const allSlidePolygons = {
     grossRect: {
-    panCoord:{x: 0.6563, y: 0.4867},
-    zoomRatio: 0.5327,
-    ROIBox: [{overlay: {x: 0.0229, y: -0.0147, width: 1.282, height: 0.9414}}]
+        panCoord: { x: 0.6563, y: 0.4867 },
+        zoomRatio: 0.5327,
+        ROIBox: [{ overlay: { x: 0.0229, y: -0.0147, width: 1.282, height: 0.9414 } }]
     }
 }
 
@@ -159,7 +148,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         // path to SVG file
         svgContainer.data = 'svg/liver_gross_230111.svg';
         svgContainer.id = 'grossAnatomyCartoon'
-        svgContainer.onload = function(){
+        svgContainer.onload = function () {
             const doc = this.getSVGDocument();
             Object.entries(allSlidePolygons).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
@@ -171,7 +160,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
             finish_waypoint('');
         }
         domElement.appendChild(svgContainer);
-      }
+    }
 
     // This is for the waypoint displayed as "3/n"
     // first fine liver cartoon (histological substructures)
