@@ -12,52 +12,6 @@ const slidePlacenta = require('./mouseDevObjects/slidePlacenta.json');
 
 import { addEListener, addSlidePolygon } from './nanostringUtils';
 
-// Polygon objects for adding drawings over slide image
-const allSlidePolygons = {
-    trachea: { // id from the SVG object
-        polygonID: 'slideTrachea', // 'object' we're importing after lasso tool
-        file: slideTrachea // same as above
-    },
-
-    midgut: {
-        polygonID: 'slideMidgut',
-        file: slideMidgut
-    },
-
-    stomach: {
-        polygonID: 'slideStomach',
-        file: slideStomach
-    },
-
-    atrium: {
-        polygonID: 'slideAtrium',
-        file: slideAtrium
-    },
-
-    brain: {
-        polygonID: 'slideBrain',
-        file: slideBrain
-    },
-
-    ventricle: {
-        polygonID: 'slideVentricle',
-        file: slideVentricle
-    },
-    esophagus: {
-        polygonID: 'slideEsophagus',
-        file: slideEsophagus
-    },
-    lung: {
-        polygonID: 'slideLung',
-        file: slideLung
-    },
-
-    pancreas: {
-        polygonID: 'slidePancreas',
-        file: slidePancreas
-    }
-}
-
 // Clickability on both heatmaps 
 // I don't know why I don't need to specify maskName, channel, or ROIBox.
 const heatmapStrucs = {
@@ -205,6 +159,15 @@ const liverStrucs = {
 
 }
 
+// Polygon objects for adding drawings over slide image
+const allSlidePolygons = {
+    grossRect: {
+    panCoord:{x: 0.6563, y: 0.4867},
+    zoomRatio: 0.5327,
+    ROIBox: [{overlay: {x: 0.0229, y: -0.0147, width: 1.282, height: 0.9414}}]
+    }
+}
+
 /**
  * Add text, images, and clickhandlers to a specific waypoint.
  * @param {number} waypointNum : The number of the current waypoint 
@@ -217,46 +180,28 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
     const showdown_text = new showdown.Converter({ tables: true });
 
     if (waypointNum === 0 && storyNum === 1) {
-        // This must go before the svg, if applicable, or it will break the functionality
-        const desc_html = document.querySelector('.minerva-viewer-waypoint').innerHTML;
-        // With the /g tag, it will replace all instances of the word 'key'
-        const new_html = desc_html.replace(/placenta and yolk sac/g, '<button id="placentaClick">' + 'placenta and yolk sac' + '</button>');
-        document.querySelector('.minerva-viewer-waypoint').innerHTML = new_html;
-
-
-        const placentaButton = document.querySelector('#placentaClick');
-        placentaButton.addEventListener("click", () => {
-            osd.viewer.viewport.panTo({ x: 0.32, y: 0.25 });
-            osd.viewer.viewport.zoomTo('5.6315');
-            addSlidePolygon("placentaPolygon", slidePlacenta, osd);
-        });
-
-        // svg mouse dev cartoon
         const svgContainer = document.createElement('object');
-        svgContainer.data = 'svg/MouseEmbryo_edit.svg'
-        svgContainer.type = 'image/svg+xml'
-        svgContainer.id = 'detailImage'
-        // Add interactivity to the clickable regions in the cartoon image SVG
-        svgContainer.onload = function () {
+        svgContainer.type = 'image/svg+xml';
+        svgContainer.data = 'svg/liver_gross_230111.svg';
+        svgContainer.id = 'grossAnatomyCartoon'
+        svgContainer.onload = function(){
             const doc = this.getSVGDocument();
             Object.entries(allSlidePolygons).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
-                    addEListener(osd, val, el, ['addPolygon'], storyNum, waypointNum);
+                    addEListener(osd, val, el, ['panZoom'], storyNum, waypointNum);
                 }
             });
-            finish_waypoint('')
+            finish_waypoint('');
         }
         domElement.appendChild(svgContainer);
-
-
-    }
+      }
 
     else if (waypointNum === 1 && storyNum === 1) {
 
         // first fine liver cartoon (histological substructures)
         const svgContainer = document.createElement('object');
-        svgContainer.data = 'svg/liver_fine_221222_substructures.svg'
+        svgContainer.data = 'svg/liver_fine_230111_substructures.svg'
         svgContainer.type = 'image/svg+xml'
         svgContainer.id = 'detailImage'
         // Add interactivity to each column in the heatmap SVG file. Columns have ids that exactly match the object keys
@@ -280,7 +225,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
 
         // second fine liver cartoon (cell types)
         const svgContainer = document.createElement('object');
-        svgContainer.data = 'svg/liver_fine_221222_cells_niches.svg'
+        svgContainer.data = 'svg/liver_fine_230111_cells_niches.svg'
         svgContainer.type = 'image/svg+xml'
         svgContainer.id = 'detailImage'
         // Add interactivity to each column in the heatmap SVG file. Columns have ids that exactly match the object keys
