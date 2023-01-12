@@ -1,46 +1,12 @@
-const slideTrachea = require('./mouseDevObjects/slideTrachea.json');
-const slideMidgut = require('./mouseDevObjects/slideMidgut.json');
-const slideStomach = require('./mouseDevObjects/slideStomach.json');
-const slideAtrium = require('./mouseDevObjects/slideAtrium.json');
-const slideBrain = require('./mouseDevObjects/slideBrain.json');
-const slideVentricle = require('./mouseDevObjects/slideVentricle.json');
-const slideEsophagus = require('./mouseDevObjects/slideEsophagus.json');
-const slideLung = require('./mouseDevObjects/slideLung.json');
-const slidePancreas = require('./mouseDevObjects/slidePancreas.json');
-const slidePlacenta = require('./mouseDevObjects/slidePlacenta.json');
-
-
 import { addEListener, addSlidePolygon } from './nanostringUtils';
 
-// Clickability on both heatmaps 
-// I don't know why I don't need to specify maskName, channel, or ROIBox.
-const heatmapStrucs = {
-    gutE9rect: {
-        panCoord: { x: 0.25, y: 0.25 },
-        zoomRatio: 1
-    },
-    gutE11rect: {
-        panCoord: { x: 0.75, y: 0.125 },
-        zoomRatio: 1
-    },
-    gutE13rect: {
-        panCoord: { x: 0.25, y: 0.75 },
-        zoomRatio: 1
-    },
-    gutE15rect: {
-        panCoord: { x: 0.75, y: 0.75 },
-        zoomRatio: 1
-    },
-    heartRect: {
-        panCoord: { x: 0.7876, y: 0.1364 },
-        zoomRatio: 4.6183
-    }
-}
-
-// Clickability on both heatmaps 
-// I don't know why I don't need to specify maskName, channel, or ROIBox.
+// Clickability on both copies of the fine morphology cartoon
+// Each item, e.g., rectCholangiocyte, exactly matches the name of the compount path object
+// from inside the SVG. 
+// We are using the click handler "addMaskAndChannel", hence the inclusion of both mask name
+// to turn on as well as the underlying hannel we want to change to.
+// Of course, we also want to set the pan and zoom coors, which would be required for both
 const liverStrucs = {
-
     rectCholangiocyte: {
         panCoord: { x: 0.159, y:0.0902 },
         zoomRatio: 3.3229,
@@ -160,6 +126,9 @@ const liverStrucs = {
 }
 
 // Polygon objects for adding drawings over slide image
+// In this case, we don't have a json with a set of coors for a
+// large, free-hand drawn polygon. Instead, we just have one 
+// rectangle that encircles the entire slide.
 const allSlidePolygons = {
     grossRect: {
     panCoord:{x: 0.6563, y: 0.4867},
@@ -168,6 +137,7 @@ const allSlidePolygons = {
     }
 }
 
+// To be honest, I'm not sure if all of these are required
 /**
  * Add text, images, and clickhandlers to a specific waypoint.
  * @param {number} waypointNum : The number of the current waypoint 
@@ -179,9 +149,14 @@ const allSlidePolygons = {
 function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) {
     const showdown_text = new showdown.Converter({ tables: true });
 
+    // This is for the waypoint displayed as "2/n"
+    // storyNum is 0 for the Table of Contents (ToC), then 1 for subsequent pages
+    // Hence, the first non-ToC page is the 0th index of the 1st index "story"
+    // Gross morphology liver cartoon
     if (waypointNum === 0 && storyNum === 1) {
         const svgContainer = document.createElement('object');
         svgContainer.type = 'image/svg+xml';
+        // path to SVG file
         svgContainer.data = 'svg/liver_gross_230111.svg';
         svgContainer.id = 'grossAnatomyCartoon'
         svgContainer.onload = function(){
@@ -189,6 +164,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
             Object.entries(allSlidePolygons).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
+                    // adding in only the click handler for panZoom
                     addEListener(osd, val, el, ['panZoom'], storyNum, waypointNum);
                 }
             });
@@ -197,44 +173,52 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         domElement.appendChild(svgContainer);
       }
 
+    // This is for the waypoint displayed as "3/n"
+    // first fine liver cartoon (histological substructures)
     else if (waypointNum === 1 && storyNum === 1) {
-
-        // first fine liver cartoon (histological substructures)
         const svgContainer = document.createElement('object');
+        // path to SVG file
         svgContainer.data = 'svg/liver_fine_230111_substructures.svg'
         svgContainer.type = 'image/svg+xml'
-        svgContainer.id = 'detailImage'
-        // Add interactivity to each column in the heatmap SVG file. Columns have ids that exactly match the object keys
+        svgContainer.id = 'detailImage1'
+        // Add interactivity to each column in the heatmap SVG file
+        // Cartoon click spots have SVG object ids that exactly match the object keys in the
+        // data structure "liverStrucs" above
         svgContainer.onload = function () {
             const doc = this.getSVGDocument();
             Object.entries(liverStrucs).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
-                    // I don't know that 'addMaskAndChannel' is best here
+                    // Adding in the click handler for panZoom
+                    // Also adding in the click handler for adjusting overlying mask
+                    // and  underlying channel
                     addEListener(osd, val, el, ['addMaskAndChannel', 'panZoom'], storyNum, waypointNum)
                 }
             });
             finish_waypoint('')
         }
         domElement.appendChild(svgContainer);
-
-
     }
 
+    // This is for the waypoint displayed as "6/n"
+    // second fine liver cartoon (cell types)
     else if (waypointNum === 4 && storyNum === 1) {
-
-        // second fine liver cartoon (cell types)
         const svgContainer = document.createElement('object');
+        // path to SVG file
         svgContainer.data = 'svg/liver_fine_230111_cells_niches.svg'
         svgContainer.type = 'image/svg+xml'
-        svgContainer.id = 'detailImage'
-        // Add interactivity to each column in the heatmap SVG file. Columns have ids that exactly match the object keys
+        svgContainer.id = 'detailImage2'
+        // Add interactivity to each column in the heatmap SVG file
+        // Cartoon click spots have SVG object ids that exactly match the object keys in the
+        // data structure "liverStrucs" above
         svgContainer.onload = function () {
             const doc = this.getSVGDocument();
             Object.entries(liverStrucs).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
-                    // I don't know that 'addMaskAndChannel' is best here
+                    // Adding in the click handler for panZoom
+                    // Also adding in the click handler for adjusting overlying mask
+                    // and  underlying channel
                     addEListener(osd, val, el, ['addMaskAndChannel', 'panZoom'], storyNum, waypointNum)
                 }
             });
@@ -242,51 +226,6 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         }
         domElement.appendChild(svgContainer);
 
-
-    }
-
-    else if (waypointNum == 3 && storyNum == 1) {
-        // svg heart heatmap
-        const svgContainer = document.createElement('object');
-        svgContainer.data = 'svg/gut_heatmap.svg'
-        svgContainer.type = 'image/svg+xml'
-        svgContainer.id = 'gutHeatmap'
-        // Add interactivity to each column in the heatmap SVG file. Columns have ids that exactly match the object keys
-        svgContainer.onload = function () {
-            const doc = this.getSVGDocument();
-            Object.entries(heatmapStrucs).forEach(([key, val]) => {
-                const el = doc.querySelector(`#${key}`);
-                if (el) {
-                    // I don't know that 'AddMaskAndChannel' is best here
-                    addEListener(osd, val, el, ['addMaskAndChannel', 'panZoom'], storyNum, waypointNum)
-                }
-            });
-            finish_waypoint('')
-        }
-
-
-        domElement.appendChild(svgContainer);
-    }
-
-    else if (waypointNum == 6 && storyNum == 1) {
-        // svg heart heatmap
-        const svgContainer = document.createElement('object');
-        svgContainer.data = 'svg/heart_MOCA_heatmap.svg'
-        svgContainer.type = 'image/svg+xml'
-        svgContainer.id = 'heartHeatmap'
-        // Add interactivity to each column in the heatmap SVG file. Columns have ids that exactly match the object keys
-        svgContainer.onload = function () {
-            const doc = this.getSVGDocument();
-            Object.entries(heatmapStrucs).forEach(([key, val]) => {
-                const el = doc.querySelector(`#${key}`);
-                if (el) {
-                    // I don't know that 'addMaskAndChannel' is best here
-                    addEListener(osd, val, el, ['addMaskAndChannel', 'panZoom'], storyNum, waypointNum)
-                }
-            });
-            finish_waypoint('')
-        }
-        domElement.appendChild(svgContainer);
 
     }
 
@@ -308,14 +247,7 @@ document.addEventListener('waypointBuildEvent', function (e) {
         width: width
     }
 
-    // Remove polygons and overlays when the waypoint is changed
-    const overlayIds = ['#slideTrachea', '#slideMidgut', '#slideStomach', '#slideAtrium', '#slideBrain', '#slideVentricle', '#slideEsophagus', '#slideLung', '#slidePancreas', '#placentaPolygon']
-    overlayIds.forEach((id) => {
-        if (document.querySelector(id)) {
-            document.querySelector(id).remove();
-        }
-    });
-
+    // Remove ROIBox overlays when the waypoint is changed
     if (document.querySelector('[id^=ROIBox]')) {
         const ROIBoxes = document.querySelectorAll('[id^=ROIBox]')
         ROIBoxes.forEach((box) => {
@@ -355,21 +287,6 @@ const css = `
     .minerva-root .minerva-sidebar-menu.toggled {
         margin-left: -185px !important;
     }
-}
-
-button#placentaClick { 
-    background:none; 
-    border:none; 
-    font-weight: 400;
-    color: #007bff; 
-    text-decoration: none;
-    outline:none;
-}
-
-
-button#placentaClick:hover { 
-    color: #0056b3; 
-    text-decoration: underline; 
 }
 
 `;
