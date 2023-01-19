@@ -47,7 +47,7 @@ const liverStrucs = {
     rectVascularEndothelialCell: {
         panCoord: { x: 0.159, y: 0.0902 },
         zoomRatio: 3.3229,
-        maskName: ["PV cells", "CV cell type (Central.venous.LSECs)"],
+        maskName: ["PV cells", "Central venous LSECs"],
         channel: "DNA"
     },
     rectNKLikeCell: {
