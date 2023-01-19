@@ -76,27 +76,27 @@ const liverStrucs = {
         channel: "DNA"
     },
     rectBileDuctCanaliculus: {
-        panCoord: { x: 0.159, y: 0.0902 },
-        zoomRatio: 3.3229,
-        maskName: ["FOVs"],
+        panCoord: { x: 0.1656, y: 0.0694 },
+        zoomRatio: 17.1726,
+        maskName:[],
         channel: "All markers"
     },
     rectCentralVein: {
         panCoord: { x: 0.2935, y: 0.2105 },
         zoomRatio: 6.0509,
-        maskName: ["FOVs"],
+        maskName:[],
         channel: "All markers"
     },
     rectPortalVein: {
         panCoord: { x: 0.2107, y: 0.0853 },
         zoomRatio: 7.3589,
-        maskName: ["FOVs"],
+        maskName:[],
         channel: "All markers"
     },
     rectBileDuct: {
         panCoord: { x: 0.1656, y: 0.0694 },
         zoomRatio: 17.1726,
-        maskName: ["FOVs"],
+        maskName:[],
         channel: "All markers"
     },
     rectZones12: {
