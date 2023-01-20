@@ -1,5 +1,11 @@
 import { addEListener } from './nanostringUtils';
-
+const allSlidePolygons = {
+    grossRect: {
+    panCoord:{x: 0.4, y: 0.5},
+    zoomRatio: 0.8,
+    ROIBox: [{overlay: {x: 0.048, y: 0.1481, width: 0.5, height: 0.7}}]
+    }
+}
 /**
  * Add text, images, and clickhandlers to a specific waypoint.
  * @param {number} waypointNum : The number of the current waypoint 
@@ -19,10 +25,10 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         // Add interactivity to the clickable regions in the cartoon image SVG
         svgContainer.onload = function (){
             const doc = this.getSVGDocument();
-            Object.entries(allPolygons).forEach(([key, val]) => {
+            Object.entries(allSlidePolygons).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
-                    addEListener(osd, val, el, ['addPolygon'], storyNum, waypointNum);
+                    addEListener(osd, val, el, ['panZoom'], storyNum, waypointNum);
                 }
             });
             finish_waypoint('')
@@ -68,7 +74,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
                 zoomTo: 18
             },
             {
-                text: "Sinusoids and Steller cells",
+                text: "Sinusoids and Stellate cells",
                 id: "sinusoidClick",
                 panTo: {
                     x: 0.251,
@@ -77,6 +83,32 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
                 zoomTo: 18
             },
         ]
+        const liverStrucs = {
+            rectCentralVein: {
+                panCoord: {x: 0.337, y: 0.544},
+                zoomRatio: 20
+            },
+            rectHepaticArtery: {
+                panCoord: {x: 0.27, y:0.4},
+                zoomRatio: 25
+            },
+            rectPortalVein: {
+                panCoord: {x: 0.258, y: 0.394},
+                zoomRatio: 25
+            },
+            rectBileDuct: {
+                panCoord: {x: 0.257, y: 0.397},
+                zoomRatio: 25
+            },
+            rectZones12: {
+                panCoord: { x: 0.314, y: 0.283 },
+                zoomRatio: 10
+            },
+            rectZone3: {
+                panCoord: { x: 0.322, y: 0.293 },
+                zoomRatio: 12
+            }
+        }
         let desc_html = document.querySelector('.minerva-viewer-waypoint').innerHTML;
         arrayLinks.forEach(function(attrs) {
             const reg = new RegExp('<li>'+attrs.text, "g")
@@ -99,10 +131,10 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         // Add interactivity to the clickable regions in the cartoon image SVG
         svgContainer.onload = function (){
             const doc = this.getSVGDocument();
-            Object.entries(allROIs).forEach(([key, val]) => {
+            Object.entries(liverStrucs).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
-                    addEListener(osd, val, el, ['addMask', 'panZoom'], storyNum, waypointNum);
+                    addEListener(osd, val, el, ['panZoom'], storyNum, waypointNum);
                 }
             });
             finish_waypoint('')
