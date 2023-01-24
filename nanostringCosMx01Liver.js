@@ -59,7 +59,7 @@ const liverStrucs = {
     rectHepatocyte: {
         panCoord: { x: 0.2935, y: 0.2105 },
         zoomRatio: 2.0264,
-        maskName: ["Hepatocytes cell types"],
+        maskName: ["Hepatocyte cell types"],
         channel: "All markers",
         ROIBox: [{ overlay: { x: 0.2069, y: 0.0961, width: 0.1776, height: 0.1852 } }]
     },
@@ -102,13 +102,13 @@ const liverStrucs = {
     rectZone3: {
         panCoord: { x: 0.4696, y: 0.5131 },
         zoomRatio: 2.7691,
-        maskName: ["Hepatocytes cell types"],
+        maskName: ["Hepatocyte cell types"],
         channel: "CK8/18"
     },
     rectZones12: {
         panCoord: { x: 0.4696, y: 0.5131 },
         zoomRatio: 2.7681,
-        maskName: ["Hepatocytes cell types"],
+        maskName: ["Hepatocyte cell types"],
         channel: "CK8/18"
     }
 
