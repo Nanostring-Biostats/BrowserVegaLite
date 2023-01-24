@@ -3028,7 +3028,7 @@ const build_page_with_exhibit = function(exhibit, options) {
     zoomOutButton: options.id + '-zoom-out',
     zoomInButton: options.id + '-zoom-in',
     immediateRender: true,
-    maxZoomPixelRatio: 10, // adjust this to limit zoom
+    maxZoomPixelRatio: 1, // adjust this to limit zoom - defult 10
     visibilityRatio: .9,
     degrees: exhibit.Rotation || 0,
   });
