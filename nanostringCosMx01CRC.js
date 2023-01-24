@@ -68,7 +68,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
     }
 
     // This is for the waypoint displayed as "7/n"
-    // first fine liver cartoon (histological substructures)
+    // Waypoint 7 figure
     else if (waypointNum === 5 && storyNum === 1) {
         const svgContainer = document.createElement('object');
         // path to SVG file
