@@ -838,7 +838,7 @@ Render.prototype = {
       }
     }
 
-    var moreEl = document.createElement('a');
+/*     var moreEl = document.createElement('a');
     if (selected && show_more && s_w) {
       const opacity = 'opacity: ' +  + ';';
       moreEl = Object.assign(moreEl, {
@@ -856,7 +856,7 @@ Render.prototype = {
         HS.pushState();
         window.onpopstate();
       });
-    }
+    } */
 
     // Append channel group to element
     el.appendChild(aEl);

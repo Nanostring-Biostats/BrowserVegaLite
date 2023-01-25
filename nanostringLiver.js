@@ -36,56 +36,13 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         domElement.appendChild(svgContainer);
     }
     else if (waypointNum === 1 && storyNum === 1) {
-        const arrayLinks = [
-            {
-                text: "Liver lobular zones",
-                id: "zoneClick",
-                panTo: {
-                    x: 0.314,
-                    y: 0.283
-                },
-                zoomTo: 7
-            },
-            {
-                text: "Portal triad",
-                id: "portalClick",
-                panTo: {
-                    x: 0.258,
-                    y: 0.394
-                },
-                zoomTo: 18
-            },
-            {
-                text: "Central Vein",
-                id: "centralClick",
-                panTo: {
-                    x: 0.337,
-                    y: 0.544
-                },
-                zoomTo: 18
-            },
-            {
-                text: "Kupffer cells",
-                id: "kupfferClick",
-                panTo: {
-                    x: 0.215,
-                    y: 0.382
-                },
-                zoomTo: 18
-            },
-            {
-                text: "Sinusoids and Stellate cells",
-                id: "sinusoidClick",
-                panTo: {
-                    x: 0.251,
-                    y: 0.284
-                },
-                zoomTo: 18
-            },
-        ]
         const liverStrucs = {
             rectCentralVein: {
                 panCoord: {x: 0.337, y: 0.544},
+                zoomRatio: 20
+            },
+            rectKupfferCell: {
+                panCoord: {x: 0.215, y: 0.382},
                 zoomRatio: 20
             },
             rectHepaticArtery: {
@@ -109,20 +66,20 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
                 zoomRatio: 12
             }
         }
-        let desc_html = document.querySelector('.minerva-viewer-waypoint').innerHTML;
+        /* let desc_html = document.querySelector('.minerva-viewer-waypoint').innerHTML;
         arrayLinks.forEach(function(attrs) {
             const reg = new RegExp('<li>'+attrs.text, "g")
             desc_html = desc_html.replace(reg,`<li><button id="${attrs.id}">${attrs.text}</button>`);
         })
-        document.querySelector('.minerva-viewer-waypoint').innerHTML = desc_html;
-        arrayLinks.forEach(function(attrs) {
+        document.querySelector('.minerva-viewer-waypoint').innerHTML = desc_html; */
+        /* arrayLinks.forEach(function(attrs) {
             const button = document.querySelector('#'+attrs.id);
             button.addEventListener("click", () => {
                 osd.viewer.viewport.panTo({x: attrs.panTo.x, y: attrs.panTo.y});
                 osd.viewer.viewport.zoomTo(attrs.zoomTo);
                 // addSlidePolygon("placentaPolygon", slidePlacenta, osd);
             });
-        })
+        }) */
 
         const svgContainer = document.createElement('object');
         svgContainer.data = 'img/DetailedLiverAnatomy.svg'
