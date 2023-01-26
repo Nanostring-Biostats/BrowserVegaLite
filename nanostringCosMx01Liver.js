@@ -10,105 +10,105 @@ const liverStrucs = {
     rectCholangiocyte: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Portal triad cells"],
+        maskName: ["Portal triad cells", "FOVs"],
         channel: "PanCK"
     },
     rectKupfferCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells"],
+        maskName: ["Immune cells", "FOVs"],
         channel: "DNA",
         ROIBox: [{ overlay: { x: 0.1787, y: 0.1224, width: 0.1388, height: 0.1333 } }]
     },
     rectHepaticStellateCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Portal triad cells"],
+        maskName: ["Portal triad cells", "FOVs"],
         channel: "DNA"
     },
     rectPlasmaCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells"],
+        maskName: ["Immune cells", "FOVs"],
         channel: "DNA"
     },
     rectBCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells"],
+        maskName: ["Immune cells", "FOVs"],
         channel: "DNA"
     },
     rectTCells: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells"],
+        maskName: ["Immune cells", "FOVs"],
         channel: "DNA"
     },
     rectVascularEndothelialCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Portal triad cells", "Central venous LSECs"],
+        maskName: ["Portal triad cells", "Central venous LSECs", "FOVs"],
         channel: "DNA"
     },
     rectNKLikeCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells"],
+        maskName: ["Immune cells", "FOVs"],
         channel: "DNA"
     },
     rectHepatocyte: {
         panCoord: { x: 0.2935, y: 0.2105 },
         zoomRatio: 2.0264,
-        maskName: ["Hepatocyte cell types"],
+        maskName: ["Hepatocyte cell types", "FOVs"],
         channel: "All markers",
         ROIBox: [{ overlay: { x: 0.2069, y: 0.0961, width: 0.1776, height: 0.1852 } }]
     },
     rectInflammatoryMacrophage: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells"],
+        maskName: ["Immune cells", "FOVs"],
         channel: "DNA"
     },
     rectSinusoidalEndothelialCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Portal triad cells", "Central venous LSECs"],
+        maskName: ["Portal triad cells", "Central venous LSECs", "FOVs"],
         channel: "DNA"
     },
     rectHepaticArtery: {
         panCoord: { x: 0.25504360638726287, y: 0.2938107749705686 },
         zoomRatio: 17.1726,
-        maskName:[],
+        maskName:["FOVs"],
         channel: "All markers"
     },
     rectCentralVein: {
         panCoord: { x: 0.279, y: 0.2035 },
         zoomRatio: 6.0509,
-        maskName:[],
+        maskName:["FOVs"],
         channel: "All markers"
     },
     rectPortalVein: {
         panCoord: { x: 0.21527283251069884, y: 0.2785574151662562 },
         zoomRatio: 7.3589,
-        maskName:[],
+        maskName:["FOVs"],
         channel: "All markers"
     },
     rectBileDuct: {
         panCoord: { x: 0.198569148270994, y: 0.25718526904140915 },
         zoomRatio: 17.1726,
-        maskName:[],
+        maskName:["FOVs"],
         channel: "All markers"
     },
     rectZone3: {
         panCoord: { x: 0.4696, y: 0.5131 },
         zoomRatio: 2.7691,
-        maskName: ["Hepatocyte cell types"],
+        maskName: ["Hepatocyte cell types", "FOVs"],
         channel: "CK8/18"
     },
     rectZones12: {
         panCoord: { x: 0.4696, y: 0.5131 },
         zoomRatio: 2.7681,
-        maskName: ["Hepatocyte cell types"],
+        maskName: ["Hepatocyte cell types", "FOVs"],
         channel: "CK8/18"
     }
 
