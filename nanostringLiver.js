@@ -39,31 +39,45 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         const liverStrucs = {
             rectCentralVein: {
                 panCoord: {x: 0.337, y: 0.544},
-                zoomRatio: 20
+                zoomRatio: 20,
+                maskName: ["Central Vein"],
+                channel: "CD68/SMA/DNA"
             },
             rectKupfferCell: {
                 panCoord: {x: 0.215, y: 0.382},
-                zoomRatio: 20
+                zoomRatio: 20,
+                maskName: ["CV Macrophage", "Liver Macrophage", "PV Macrophage"],
+                channel: "Nuclei"
             },
             rectHepaticArtery: {
                 panCoord: {x: 0.27, y:0.4},
-                zoomRatio: 25
+                zoomRatio: 25,
+                maskName: ["Artery"],
+                channel: "CD68/SMA/DNA"
             },
             rectPortalVein: {
                 panCoord: {x: 0.258, y: 0.394},
-                zoomRatio: 25
+                zoomRatio: 25,
+                maskName: ["Portal Vein"],
+                channel: "CD68/SMA/DNA"
             },
             rectBileDuct: {
                 panCoord: {x: 0.257, y: 0.397},
-                zoomRatio: 25
+                zoomRatio: 25,
+                maskName: ["Bile Duct"],
+                channel: "CD68/SMA/DNA"
             },
             rectZones12: {
                 panCoord: { x: 0.314, y: 0.283 },
-                zoomRatio: 10
+                zoomRatio: 10,
+                maskName: ["Zone 1", "Zone 2"],
+                channel: "CD68/SMA/DNA"
             },
             rectZone3: {
                 panCoord: { x: 0.322, y: 0.293 },
-                zoomRatio: 12
+                zoomRatio: 12,
+                maskName: ["Zone 3"],
+                channel: "CD68/SMA/DNA"
             }
         }
         /* let desc_html = document.querySelector('.minerva-viewer-waypoint').innerHTML;
@@ -91,7 +105,8 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
             Object.entries(liverStrucs).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
-                    addEListener(osd, val, el, ['panZoom'], storyNum, waypointNum);
+                    // order of ['addMaskAndChannel', 'panZoom'] appears to matter
+                    addEListener(osd, val, el, ['addMaskAndChannel', 'panZoom'], storyNum, waypointNum);
                 }
             });
             finish_waypoint('')
