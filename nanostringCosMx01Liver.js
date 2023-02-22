@@ -10,69 +10,69 @@ const liverStrucs = {
     rectCholangiocyte: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Portal triad cells", "FOVs"],
+        maskName: ["Portal triad cells"],
         channel: "PanCK"
     },
     rectKupfferCell: {
-        panCoord: { x: 0.2172, y: 0.23952 },
-        zoomRatio: 3.3229,
-        maskName: ["Immune cells", "FOVs"],
+        panCoord: { x: 0.2935, y: 0.2105 },
+        zoomRatio: 2.0264,
+        maskName: ["Immune cells"],
         channel: "DNA",
-        ROIBox: [{ overlay: { x: 0.1787, y: 0.1224, width: 0.1388, height: 0.1333 } }]
+        ROIBox: [{ overlay: { x: 0.2069, y: 0.0961, width: 0.1776, height: 0.1852 } }]
     },
     rectHepaticStellateCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Portal triad cells", "FOVs"],
+        maskName: ["Portal triad cells"],
         channel: "DNA"
     },
     rectPlasmaCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells", "FOVs"],
+        maskName: ["Immune cells"],
         channel: "DNA"
     },
     rectBCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells", "FOVs"],
+        maskName: ["Immune cells"],
         channel: "DNA"
     },
     rectTCells: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells", "FOVs"],
+        maskName: ["Immune cells"],
         channel: "DNA"
     },
     rectVascularEndothelialCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Portal triad cells", "Central venous LSECs", "FOVs"],
+        maskName: ["Portal triad cells", "Central venous LSECs"],
         channel: "DNA"
     },
     rectNKLikeCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells", "FOVs"],
+        maskName: ["Immune cells"],
         channel: "DNA"
     },
     rectHepatocyte: {
         panCoord: { x: 0.2935, y: 0.2105 },
         zoomRatio: 2.0264,
-        maskName: ["Hepatocyte cell types", "FOVs"],
+        maskName: ["Hepatocyte cell types"],
         channel: "All markers",
         ROIBox: [{ overlay: { x: 0.2069, y: 0.0961, width: 0.1776, height: 0.1852 } }]
     },
     rectInflammatoryMacrophage: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Immune cells", "FOVs"],
+        maskName: ["Immune cells"],
         channel: "DNA"
     },
     rectSinusoidalEndothelialCell: {
         panCoord: { x: 0.2172, y: 0.23952 },
         zoomRatio: 3.3229,
-        maskName: ["Portal triad cells", "Central venous LSECs", "FOVs"],
+        maskName: ["Portal triad cells", "Central venous LSECs"],
         channel: "DNA"
     },
     rectHepaticArtery: {
@@ -102,13 +102,13 @@ const liverStrucs = {
     rectZone3: {
         panCoord: { x: 0.4696, y: 0.5131 },
         zoomRatio: 2.7691,
-        maskName: ["Hepatocyte cell types", "FOVs"],
+        maskName: ["Hepatocyte cell types"],
         channel: "CK8/18"
     },
     rectZones12: {
         panCoord: { x: 0.4696, y: 0.5131 },
         zoomRatio: 2.7681,
-        maskName: ["Hepatocyte cell types", "FOVs"],
+        maskName: ["Hepatocyte cell types"],
         channel: "CK8/18"
     }
 
@@ -181,6 +181,7 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
                     // Adding in the click handler for panZoom
                     // Also adding in the click handler for adjusting overlying mask
                     // and  underlying channel
+                    // order of ['addMaskAndChannel', 'panZoom'] appears to matter
                     addEListener(osd, val, el, ['addMaskAndChannel', 'panZoom'], storyNum, waypointNum)
                 }
             });
