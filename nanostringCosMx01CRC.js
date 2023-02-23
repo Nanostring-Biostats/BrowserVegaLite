@@ -4,7 +4,9 @@ import { addEListener, addSlidePolygon } from './nanostringUtils';
 // In this case, we don't have a json with a set of coors for a
 // large, free-hand drawn polygon. Instead, we just have 
 // rectangles that highlight areas on the slide.
-const allSlidePolygons = {
+// Behavior is weird when some entries have compontns and others don't, so
+// splitting into two lists (mask vs no mask).
+const wypt6Polygons = {
     wypt6left: {
         panCoord: { x: 0.07599129314066355, y: 0.19842878139408823 },
         zoomRatio: 5.7,
@@ -14,16 +16,22 @@ const allSlidePolygons = {
         panCoord: { x: 0.4487303694068083, y: 0.22606379197232945 },
         zoomRatio: 5.7,
         ROIBox: [{ overlay: { x: 0.4109, y: 0.1967, width: 0.089, height: 0.0619 } }]
-    },
+    }
+}
+const wypt7Polygons = {
     wypt7upper: {
         panCoord: { x: 0.238, y: 0.1264 },
         zoomRatio: 3.3,
-        ROIBox: [{ overlay: { x: 0.1658, y: 0.0533, width: 0.1974, height: 0.1446 } }]
+        ROIBox: [{ overlay: { x: 0.1658, y: 0.0533, width: 0.1974, height: 0.1446 } }],
+        maskName: ["Immune unknown", "Immune B cell", "Immune NK", "Immune CD4 T cell", "Immune CD8 T cell", "Immune Myeloid"],
+        channel: "DNA"
     },
     wypt7lower: {
         panCoord: { x: 0.3187915800441821, y: 0.8661443007582452 },
         zoomRatio: 3.3,
-        ROIBox: [{ overlay: { x: 0.2715, y: 0.839, width: 0.0994, height: 0.0625 } }]
+        ROIBox: [{ overlay: { x: 0.2715, y: 0.839, width: 0.0994, height: 0.0625 } }],
+        maskName: ["Immune unknown", "Immune B cell", "Immune NK", "Immune CD4 T cell", "Immune CD8 T cell", "Immune Myeloid"],
+        chanel: "DNA"
     }
 }
 
@@ -52,10 +60,10 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         svgContainer.id = 'wypt6figure'
         // Add interactivity to the figure
         // Cartoon click spots have SVG object ids that exactly match the object keys in the
-        // data structure "allSlidePolygons" above
+        // data structure "wypt6Polygons" above
         svgContainer.onload = function () {
             const doc = this.getSVGDocument();
-            Object.entries(allSlidePolygons).forEach(([key, val]) => {
+            Object.entries(wypt6Polygons).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
                     // adding in only the click handler for panZoom
@@ -77,14 +85,14 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         svgContainer.id = 'waypoint7figure'
         // Add interactivity to the figure
         // Cartoon click spots have SVG object ids that exactly match the object keys in the
-        // data structure "allSlidePolygons" above
+        // data structure "wypt7Polygons" above
         svgContainer.onload = function () {
             const doc = this.getSVGDocument();
-            Object.entries(allSlidePolygons).forEach(([key, val]) => {
+            Object.entries(wypt7Polygons).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
                     // adding in only the click handler for panZoom
-                    addEListener(osd, val, el, ['panZoom'], storyNum, waypointNum);
+                    addEListener(osd, val, el, ['addMaskAndChannel', 'panZoom'], storyNum, waypointNum);
                 }
             });
             finish_waypoint('');
