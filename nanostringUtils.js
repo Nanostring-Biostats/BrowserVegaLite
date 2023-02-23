@@ -84,13 +84,18 @@ export function addMask(osd, maskNames) {
  * @param {string} channelName : exact name of the channel as it appears in the story
  */
 export function addChannel(osd, channelName) {
-    const channelsList = osd.hashstate.cgs[0].Channels;
-    const channelIndex = channelsList.indexOf(channelName);
-    if (channelIndex >= 0) {
-        osd.hashstate.g = channelIndex + 1;
-    } else {
-        osd.hashstate.g = 0;
-    }
+    const channelsLen = osd.hashstate.cgs.length;
+    let targetIndex = 0;
+    for (let i = 0; i < channelsLen; i++) {
+        const cName = osd.hashstate.cgs[i].Name;
+        if (cName == channelName) {
+            targetIndex = i;
+        }
+        console.log(cName)
+      }
+    console.log(targetIndex);
+    osd.hashstate.g = targetIndex;
+
 }
 
 /**
