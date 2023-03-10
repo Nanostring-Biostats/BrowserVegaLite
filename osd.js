@@ -467,11 +467,9 @@ RenderOSD.prototype = {
       }
       a_label_el.css('transform',
         'translate('+t_x+'px, '+t_y+'px)');
-      a_label_el.addClass('p-3');
       a_label_el.text(a_text);
     }
     else {
-      a_label_el.removeClass('p-3');
       a_label_el.text('');
     }
   },
