@@ -2203,6 +2203,10 @@ a.minerva-root .badge-dark:focus, a.minerva-root .badge-dark.focus { outline: 0;
   width: 100%;
 }
 
+.minerva-root > div {
+  background-color: black;
+}
+
 .minerva-root .minerva-toggle-sidebar {
   color: #eee;
 }
