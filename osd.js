@@ -33,32 +33,10 @@ const changeSprings = function(viewer, seconds, stiffness) {
   });
 };
 
-// Set the opacity of active channel groups or segmentation masks
-const newMarkers = function(tileSources, group, active_masks) {
-
-  const mask_paths = active_masks.map(m => m.Path);
-
-  Object.keys(tileSources)
-    .forEach(el => {
-      const mask_path_index = mask_paths.indexOf(el);
-      const opacity = (el === group.Path || mask_path_index >=0) ? 1 : 0;
-      tileSources[el].forEach(tiledImage => {
-        tiledImage.setOpacity(opacity);
-        const {world} = tiledImage.viewer || {};
-        if (world && mask_path_index >= 0) {
-          // Reorder tiled images based on current active mask order
-          const itemIndex = world.getItemCount() - 1 - mask_path_index;
-          world.setItemIndex(tiledImage, Math.max(itemIndex, 0));
-        }
-      });
-    });
-};
-
 // Render openseadragon from given hash state
-export const RenderOSD = function(hashstate, viewer, tileSources, eventHandler) {
+export const RenderOSD = function(hashstate, viewer, eventHandler) {
 
   this.svg_overlay = d3.select(viewer.svgOverlay().node());
-  this.tileSources = tileSources;
   this.hashstate = hashstate;
   this.viewer = viewer;
   this.mouseEvent = {};
@@ -80,10 +58,14 @@ RenderOSD.prototype = {
 
   // Initialize connection to openseadragon
   init: function () {
-  
+
     const viewer = this.viewer;
     const HS = this.hashstate;
     const THIS = this;
+
+    const isRendered = (n) => {
+      return HS.isRendered(n);
+    }
 
     // Track mouse drag for lasso polygon drawing
     var mouse_drag = new OpenSeadragon.MouseTracker({
@@ -208,6 +190,7 @@ RenderOSD.prototype = {
     this.viewer.addHandler('animation', function(e) {
       const THIS = e.userData;
       const HS = THIS.hashstate;
+      HS.gl_state.redrawLensTiles();
       const scale = THIS.viewer.viewport.getZoom();
       const pan = THIS.viewer.viewport.getCenter();
       HS.v = [
@@ -338,10 +321,10 @@ RenderOSD.prototype = {
     // Redraw design
     if(redraw) {
       // Update OpenSeadragon
+      HS.gl_state.reloadTiles();
       this.activateViewport();
-      newMarkers(this.tileSources, HS.group, HS.active_masks);
+      HS.newMasks(this.viewer)
     }
-    this.viewer.forceRedraw();
   },
 
   // add a lasso polygon to svg overlay
@@ -434,22 +417,25 @@ RenderOSD.prototype = {
     }
 
     // Create specific ids for each arrow subelement
-    const a_image_el = $('#'+el);
-    const a_svg_el = $('#'+el+' svg');
     const a_text_el = $('#'+text_el);
+    const a_image_el = document.querySelector('#'+el);
+    const a_svg_el = document.querySelector('#'+el+' svg');
     const a_label_el = $('#'+text_el+' .minerva-arrow-label');
-    const a_radius = a_svg_el[0].getAttribute('width') / 2;
+    const a_radius = a_svg_el.getAttribute('width') / 2;
     const a_y = a_radius * Math.sin(a.Angle * Math.PI /180);
     const a_x = a_radius * Math.cos(a.Angle * Math.PI /180);
 
     // Enable hidden (text-only) arrows
     if (a.HideArrow == true) {
-      a_image_el.css('display', 'none');
+      $(a_image_el).addClass('d-none');
     }
     else {
-      a_image_el.css('display', 'block');
-      a_svg_el[0].setAttribute('transform', 
-        'translate('+a_x+','+a_y+')rotate('+a.Angle+')');
+      $(a_image_el).removeClass('d-none');
+      const x_px = Math.round(a_x)+'px'
+      const y_px = Math.round(a_y)+'px'
+      const deg = Math.round(a.Angle)+'deg';
+      a_svg_el.style.transform = `translate(${x_px},${y_px}) rotate(${deg})`;
+      a_svg_el.style['transform-origin'] = 'center';
       a_label_el.css('top', '100px');
     }
 

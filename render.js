@@ -200,16 +200,40 @@ const newCopyButton = function() {
     setTimeout(function() {
       $(this).trigger('relabel', [copy_pre]);
     }, 1000);
-  return false;
+    return false;
   });
 };
+
+const updateColor = (group, color, c) => {
+  group.Colors = group.Colors.map((col, i) => {
+    return [col, color][+(c === i)];
+  });
+  return group;
+}
+
+const addChannel = (group, subgroup) => {
+  return {
+    ...group,
+    Shown: [...group.Shown, true],
+    Channels: [...group.Channels, subgroup.Name],
+    Colors: [...group.Colors, subgroup.Colors[0]],
+    Descriptions: [...group.Descriptions, subgroup.Description]
+  };
+}
+
+const toggleChannelShown = (group, c) => {
+  group.Shown = group.Shown.map((show, i) => {
+    return [show, !show][+(c === i)];
+  });
+  return group;
+}
 
 // Render the non-openseadragon UI
 export const Render = function(hashstate, osd) {
 
   this.trackers = hashstate.trackers;
   this.pollycache = hashstate.pollycache;
-  this.showdown = new showdown.Converter();
+  this.showdown = new showdown.Converter({tables: true});
 
   this.osd = osd;
   this.hashstate = hashstate;
@@ -217,11 +241,21 @@ export const Render = function(hashstate, osd) {
 
 Render.prototype = {
 
-  init: function(aspect_ratio) {
+  init: function() {
+
+    const isMobile = () => {
+      const fixed_el = document.querySelector('.minerva-fixed');
+      return (fixed_el?.clientWidth || 0) <= 750;
+    }
+
+    // Set mobile view
+    if (isMobile()) {
+      $(".minerva-legend").addClass("toggled");
+      $(".minerva-sidebar-menu").addClass("toggled");
+    }
 
     const HS = this.hashstate;
     // Go to true center
-    HS.v = [HS.v[0], 0.5 * aspect_ratio, 0.5];
     HS.newExhibit();
 
     // Read hash
@@ -263,20 +297,61 @@ Render.prototype = {
       title: 'Clone linked view'
     });
 
+    // Toggle legend info
+    ((k) => {
+      const el = document.getElementsByClassName(k).item(0);
+      el.addEventListener('click', () => this.toggleInfo());
+    })('minerva-channel-legend-info-icon');
+    
+    const toggleAdding = () => {
+      HS.toggleAdding();
+      this.newView(true);
+    }
+    const openAdding = () => {
+      if (HS.infoOpen && !HS.addingOpen) {
+        toggleAdding();
+      }
+    }
+    // Toggle channel selection
+    ((k) => {
+      const el = document.getElementsByClassName(k).item(0);
+      el.addEventListener('click', toggleAdding);
+    })('minerva-channel-legend-add-panel');
+
+    ((k) => {
+      var el = HS.el.getElementsByClassName(k).item(0);
+      el.addEventListener("click", openAdding);
+    })('minerva-channel-legend-adding-info-panel');
+
+    ((k) => {
+      var el = HS.el.getElementsByClassName(k).item(0);
+      el.addEventListener("click", openAdding);
+    })('minerva-channel-legend-adding-panel');
+
+
     // Modals to copy shareable link and edit description
     $('#copy_link_modal').on('hidden.bs.modal', HS.cancelDrawing.bind(HS));
     $('.minerva-edit_description_modal').on('hidden.bs.modal', HS.cancelDrawing.bind(HS));
 
     // Button to toggle sidebar
-    $('.minerva-toggle-sidebar').click(function(e) {
+    $('.minerva-toggle-sidebar').click((e) => {
       e.preventDefault();
       $(".minerva-sidebar-menu").toggleClass("toggled");
+      if (isMobile()) {
+        if (HS.infoOpen) this.toggleInfo();
+        $(".minerva-legend").addClass("toggled");
+      }
     });
 
     // Button to toggle legend
-    $('.minerva-toggle-legend').click(function(e) {
+    $('.minerva-toggle-legend').click((e) => {
       e.preventDefault();
       $(".minerva-legend").toggleClass("toggled");
+      const closed = $(".minerva-legend").hasClass("toggled");
+      if (closed && HS.infoOpen) this.toggleInfo();
+      if (isMobile()) {
+        $(".minerva-sidebar-menu").addClass("toggled");
+      }
     });
 
     // Left arrow decreases waypoint by 1
@@ -418,6 +493,17 @@ Render.prototype = {
       return false;
     });
   },
+
+  toggleInfo() {
+    const HS = this.hashstate;
+    HS.toggleInfo();
+    if (!HS.infoOpen) {
+      HS.addingOpen = false;
+      HS.activeChannel = -1;
+    }
+    this.newView(true);
+  },
+
   // Rerender only openseadragon UI or all UI if redraw is true
   newView: function(redraw) {
 
@@ -425,6 +511,10 @@ Render.prototype = {
     this.osd.newView(redraw);
     // Redraw design
     if(redraw) {
+
+      // redrawLensUI
+      HS.updateLensUI(null);
+
       // Redraw HTML Menus
       this.addChannelLegends();
 
@@ -481,6 +571,35 @@ Render.prototype = {
         arrow_0.HideArrow = hide_arrow ? false : true;
         THIS.newView(true);
       });
+
+      const logo_svg = this.getLogoImage();
+      logo_svg.style = "width: 85px";
+      const logo_link = "https://minerva.im";
+      const logo_class = "minerva-logo-anchor";
+      const menu_class = 'minerva-sidebar-menu';
+      const side_menu = document.getElementsByClassName(menu_class)[0];
+      const logos = side_menu.getElementsByClassName(logo_class);
+      [...logos].forEach((d) => {
+        side_menu.removeChild(d);
+      })
+      const logo_root = document.createElement('a');
+      const info_div = document.createElement('div');
+      logo_root.className = `position-fixed ${logo_class}`;
+      logo_root.style.cssText = `
+        left: 0.5em;
+        bottom: 0.5em;
+        display: block;
+        color: inherit;
+        line-height: 0.9em;
+        text-decoration: none;
+        padding: 0.4em 0.3em 0.2em;
+        background-color: rgba(0,0,0,0.8);
+      `;
+      logo_root.setAttribute('href', logo_link);
+      info_div.innerText = 'Made with';
+      logo_root.appendChild(info_div);
+      logo_root.appendChild(logo_svg);
+      side_menu.appendChild(logo_root);
     }
 
     // In editor mode
@@ -551,7 +670,8 @@ Render.prototype = {
     const prefix = '#' + HS.id + ' ';
 
     // Enable home button if in outline mode, otherwise enable table of contents button
-    displayOrNot(prefix+'.minerva-toc-button', !edit);
+    displayOrNot(prefix+'.minerva-home-button', !noHome && !edit && HS.waypoint.Mode == 'outline');
+    displayOrNot(prefix+'.minerva-toc-button', !edit && HS.waypoint.Mode != 'outline');
     // Enable 3D UI if in 3D mode
     displayOrNot(prefix+'.minerva-channel-groups-legend', !HS.design.is3d);
     displayOrNot(prefix+'.minerva-z-slider-legend', HS.design.is3d);
@@ -565,7 +685,7 @@ Render.prototype = {
     displayOrNot(prefix+'.minerva-waypointName', !edit);
     
     // Show crosshair cursor if drawing
-    toggleCursor(prefix+'.minerva-openseadragon *', 'crosshair', drawing);
+    toggleCursor(prefix+'.minerva-openseadragon > div', 'crosshair', drawing);
     // Show correct switch state based on drawing mode
     greenOrWhite(prefix+'.minerva-draw-switch *', drawing && (drawType == "box"));
     greenOrWhite(prefix+'.minerva-lasso-switch *', drawing && (drawType == "lasso"));
@@ -580,6 +700,36 @@ Render.prototype = {
       classOrNot(prefix+'.minerva-sidebar-menu', true, 'toggled');
       displayOrNot(prefix+'.minerva-toggle-sidebar', false);
     }
+
+    // Toggle additional info features
+    const { infoOpen, addingOpen } = HS;
+    const hasInfo = HS.allowInfoIcon;
+    const canAdd = HS.singleChannelInfoOpen;
+    ((k) => {
+      const bar = "minerva-settings-bar";
+      const settings = "minerva-settings-icon";
+      const bar_line = 'border-right: 2px solid grey;';
+      const root = HS.el.getElementsByClassName(k)[0];
+      const bar_el = root.getElementsByClassName(bar)[0];
+      const el = root.getElementsByClassName(settings)[0];
+      bar_el.style.cssText = ['',bar_line][+infoOpen];
+      el.innerText = ['⚙\uFE0E','⨂'][+infoOpen];
+    })("minerva-channel-legend-info-icon");
+    ((k) => {
+      const add = "minerva-add-icon";
+      const root = HS.el.getElementsByClassName(k)[0];
+      const el = root.getElementsByClassName(add)[0];
+      el.innerText = ['⊕','⨂'][+addingOpen];
+    })("minerva-channel-legend-add-panel");
+    classOrNot(".minerva-legend-grid", !hasInfo, "disabled");
+    classOrNot(".minerva-channel-legend-2", canAdd, 'toggled');
+    classOrNot(".minerva-channel-legend-info", infoOpen, 'toggled');
+    classOrNot(".minerva-channel-legend-info-icon", !hasInfo, 'disabled');
+    classOrNot(".minerva-channel-legend-add-panel", canAdd, 'toggled');
+    classOrNot(".minerva-channel-legend-adding", addingOpen, "toggled");
+    classOrNot(".minerva-channel-legend-adding-info", addingOpen, "toggled");
+    classOrNot(".minerva-channel-legend-adding-info", !canAdd, "disabled");
+    classOrNot(".minerva-channel-legend-adding", !canAdd, "disabled");
 
     // H&E should not display number of cycif markers
     const is_h_e = HS.group.Name == 'H&E';
@@ -666,7 +816,7 @@ Render.prototype = {
     const masks = HS.masks.filter(mask => {
       return mask_names.includes(mask.Name);
     });
-    if (masks.length || HS.edit) {
+    if (masks.length && HS.waypoint.Mode == 'outline') {
       $('.minerva-mask-label').show()
     }
     else {
@@ -726,7 +876,9 @@ Render.prototype = {
     aEl.setAttribute('aria-selected', ariaSelected);
 
     // Append mask layer to mask layers
-    HS.el.getElementsByClassName('minerva-mask-layers')[0].appendChild(aEl);
+    if (HS.waypoint.Mode == 'outline') {
+      HS.el.getElementsByClassName('minerva-mask-layers')[0].appendChild(aEl);
+    }
     
     // Activate or deactivate Mask Layer
     $(aEl).click(this, function(e) {
@@ -864,7 +1016,16 @@ Render.prototype = {
     
     // Update Channel Group
     $(aEl).click(this, function(e) {
-      HS.g = g;
+      if ( s_w && group.Channels.length <= 1 ) {
+        // Update Waypoint
+        HS.s = s_w[0];
+        HS.w = s_w[1];
+      }
+      else {
+        // Clear masks
+        HS.m = [];
+        HS.g = g;
+      }
       HS.pushState();
       window.onpopstate();
     });
@@ -874,30 +1035,217 @@ Render.prototype = {
   // Add channel legend labels
   addChannelLegends: function() {
     const HS = this.hashstate;
-    $('.minerva-channel-legend').empty();
-    HS.channels.forEach(this.addChannelLegend, this);
+    const { group, activeChannel } = HS;
+    var label = '';
+    var picked = new RegExp("^$");
+    if (activeChannel >= 0) {
+      label = group.Channels[activeChannel]; 
+      const color = group.Colors[activeChannel]; 
+      if (color) picked = new RegExp(color, "i");
+    }
+    $('.minerva-channel-legend-1').empty();
+    $('.minerva-channel-legend-2').empty();
+    $('.minerva-channel-legend-3').empty();
+    $('.minerva-channel-legend-info').empty();
+    $('.minerva-channel-legend-adding').empty();
+    $('.minerva-channel-legend-adding-info').empty();
+    $('.minerva-channel-legend-color-picker').empty();
+    if (activeChannel < 0) {
+      $('.minerva-channel-legend-color-picker').removeClass('toggled');
+    }
+    const legend_lines = HS.channel_legend_lines;
+    legend_lines.forEach(this.addChannelLegend, this);
+    // Add all channels not present in legend
+    const defaults = HS.subpath_defaults;
+    const to_hex = (k) => defaults.get(k).Colors[0];
+    const missing_names = [...defaults.keys()].filter((key) => {
+      return !legend_lines.find(({ name }) => key === name);
+    });
+
+    // Allow channel choices
+    missing_names.forEach(this.addChannelChoice, this);
+
+    // Add color selection
+    const COLORS = [
+      'FF00FF',
+      '8000FF',
+      '0000FF',
+      '00FFFF',
+      '008040',
+      '00FF00',
+      'FFFF00',
+      'FF8000',
+      'FF0000',
+      'FFFFFF'
+    ];
+
+    ((cls) => {
+      const picker = HS.el.getElementsByClassName(cls)[0];
+      var header = document.createElement('div');
+      header.className = "all-columns";
+      header.innerText = label;
+      picker.appendChild(header);
+      COLORS.forEach(color => {
+        var colorize = document.createElement('div');
+        $(colorize).css('background-color', '#'+color);
+        colorize.addEventListener("click", () => {
+          HS.group = updateColor(group, color, activeChannel);
+          this.newView(true);
+        });
+        if (picked.test(color)) {
+          colorize.className = "glowing";
+        }
+        picker.appendChild(colorize);
+      });
+      var submit = document.createElement('a');
+      submit.className = "nav-link active";
+      submit.innerText = "Update";
+      picker.appendChild(submit);
+      submit.addEventListener("click", () => {
+        $("."+cls).removeClass("toggled");
+        HS.activeChannel = -1;
+        this.newView(true);
+      })
+    })("minerva-channel-legend-color-picker");
   },
 
   // Add channel legend label
-  addChannelLegend: function(channel, c) {
-    const color = this.indexColor(c, '#FFF');
+  addChannelLegend: function(legend_line) {
     const HS = this.hashstate;
+    const color = legend_line.color;
+    const mask_index = legend_line.mask_index;
+    const group_index = legend_line.group_index;
+    const shown_idx = (() => {
+      if (legend_line.rendered) return 2;
+      return +legend_line.shown;
+    })();
 
-    var label = document.createElement('span');
-    label.className = 'legend-label pl-3';
-    label.innerText = channel;
+    const onClick = () => {
+      if (group_index != -1) {
+        HS.group = toggleChannelShown(HS.group, group_index);
+      }
+      if (mask_index != -1) {
+        if (shown_idx > 0) {
+          HS.m = HS.m.filter(m => m != mask_index);
+        }
+        else if (!HS.m.includes(mask_index)){
+          HS.m = [...HS.m, mask_index];
+        }
+      }
+      HS.pushState();
+      window.onpopstate();
+    }
 
-    var badge = document.createElement('span');
-    $(badge).css('background-color', color);
-    badge.className = 'badge legend-color';
-    badge.innerText = '\u00a0';
+    var visible = document.createElement('li');
+    var colorize = document.createElement('li');
+    var label = document.createElement('li');
+    label.innerText = legend_line.name;
+    colorize.className = "glowing";
+
+    // Opacities
+    label.style.cssText = 'opacity:'+[0.5,1,1][shown_idx];
+    visible.style.cssText = 'opacity:'+[0.5,1,0][shown_idx];
+    colorize.style.cssText = 'opacity:'+[0.5,1,1][shown_idx];
+    $(colorize).css('background-color', '#'+color);
+
+    // If features are active
+    if (HS.singleChannelInfoOpen) {
+      label.addEventListener("click", onClick);
+      visible.addEventListener("click", onClick);
+      colorize.addEventListener("click", (e) => {
+        if (!shown_idx && group_index != -1) {
+          HS.group = toggleChannelShown(HS.group, group_index);
+        }
+        $(".minerva-channel-legend-color-picker").addClass("toggled");
+        if (group_index != -1) {
+          HS.activeChannel = group_index;
+        }
+        this.newView(true);
+        e.stopPropagation();
+      });
+      const text_hide = 'color: transparent';
+      const colorize_ico = document.createElement('i');
+      let text_col = ['text-dark', 'text-dark', ''][shown_idx];
+      if (group_index === -1) text_col = '';
+      colorize_ico.style.cssText = ['', '', text_hide][shown_idx];
+      if (mask_index != -1) {
+        colorize_ico.style.cssText = text_hide;
+      }
+      colorize_ico.className = `fa fa-eye-dropper ${text_col}`;
+      colorize.appendChild(colorize_ico);
+
+      var visible_ico = document.createElement('i');
+      visible_ico.className = 'fa fa-eye' + ['-slash', '', ''][shown_idx];
+      visible.appendChild(visible_ico);
+    }
+    else {
+      label.addEventListener("click", () => this.toggleInfo());
+      colorize.addEventListener("click", () => this.toggleInfo());
+    }
 
     // Append channel legend to list
-    var ul = HS.el.getElementsByClassName('minerva-channel-legend')[0];
-    var li = document.createElement('li');
-    li.appendChild(badge);
-    li.appendChild(label);
-    ul.appendChild(li);
+    (() => {
+      var c1 = HS.el.getElementsByClassName('minerva-channel-legend-1')[0];
+      var c2 = HS.el.getElementsByClassName('minerva-channel-legend-2')[0];
+      var c3 = HS.el.getElementsByClassName('minerva-channel-legend-3')[0];
+      c1.appendChild(colorize);
+      c2.appendChild(visible);
+      c3.appendChild(label);
+    })();
+
+    if (!HS.allowInfoLegend) return;
+
+    // Add legend description
+    ((k) => {
+      const { description } = legend_line;
+      var ul = HS.el.getElementsByClassName(k).item(0);
+      var li = document.createElement('li');
+      const styles = [
+        'opacity:'+[0.5,1,1][shown_idx]
+      ].concat((group_index === HS.activeChannel) ? [
+        'border-bottom: '+ '2px solid #' + color
+      ] : []);
+      const empty = '---';
+      li.style.cssText = styles.join('; ');
+      li.addEventListener("click", onClick);
+      li.innerText = description || empty;
+      if (!description) {
+        li.style.color = 'transparent';
+      }
+      ul.appendChild(li);
+    })('minerva-channel-legend-info');
+
+  },
+
+  // Add new single channel possibility
+  addChannelChoice: function(name) {
+    const HS = this.hashstate;
+    const defaults = HS.subpath_defaults;
+    const subgroup = defaults.get(name);
+    const onClick = () => {
+      HS.group = addChannel(HS.group, subgroup);
+      HS.pushState();
+      window.onpopstate();
+    }
+    const empty = '---';
+    ((k) => {
+        var ul = HS.el.getElementsByClassName(k).item(0);
+        var li = document.createElement('li');
+        li.addEventListener("click", onClick);
+        li.innerText = name || empty;
+        ul.appendChild(li);
+    })('minerva-channel-legend-adding');
+
+    ((k) => {
+        var ul = HS.el.getElementsByClassName(k).item(0);
+        var li = document.createElement('li');
+        li.addEventListener("click", onClick);
+        li.innerText = subgroup.Description || empty;
+        if (!subgroup.Description) {
+          li.style.color = 'transparent';
+        }
+        ul.appendChild(li);
+    })('minerva-channel-legend-adding-info');
   },
 
   // Return map of channels to indices
@@ -915,7 +1263,7 @@ Render.prototype = {
     if (i === undefined) {
       return empty;
     }
-    return '#' + colors[i % colors.length];
+    return colors[i % colors.length];
   },
 
   // Render all stories
@@ -951,6 +1299,22 @@ Render.prototype = {
     const md = HS.design.footer;
     footer.innerHTML = this.showdown.makeHtml(md);
     items.appendChild(footer);
+  },
+
+  // Generate svg logo element
+  getLogoImage: function() {
+		const parser = new DOMParser();
+		const styleStr = '<style type="text/css"> .st0{fill:#FFFFFF;} .st1{fill:#00A5DF;} .st2{fill:#963CBD;} .st3{fill:#004EA8;} .st4{fill:#93C90F;} .st5{fill:#007749;} .st6{fill:#D00070;} .st7{fill:#890C58;} .st8{fill:#FF6720;} .st9{fill:#00778B;} .st10{fill:#AB2328;}</style>';
+    const wordStr = '<g><polygon class="st0" points="178.39,125.26 197.56,27.3 228.84,98.11 261.23,27.3 278.46,125.26 264.36,125.26 255.57,70.26  228.6,129.44 202.4,70.2 192.61,125.26 "/><rect x="293.46" y="34.15" class="st0" width="13.75" height="91.11"/><polygon class="st0" points="327.1,125.26 327.1,27.95 388.31,96.67 388.31,34.15 402.06,34.15 402.06,130.8 340.85,62.24  340.85,125.26 "/><polygon class="st0" points="476.7,47.07 434.41,47.07 434.41,71.91 465.87,71.91 465.87,84.84 434.41,84.84 434.41,112.33  476.7,112.33 476.7,125.26 420.66,125.26 420.66,34.15 476.7,34.15 "/><path class="st0" d="M534.69,86.43l28.2,38.83h-16.82l-26.02-37.29h-12.55v37.29h-13.75V34.15h26.18c12.04,0,20.73,2.26,26.08,6.79 c5.9,5.03,8.85,11.68,8.85,19.94c0,6.45-1.85,12-5.55,16.64C545.63,82.16,540.75,85.13,534.69,86.43 M507.51,75.99h14.44 c13.02,0,19.53-4.98,19.53-14.93c0-9.32-6.33-13.98-19-13.98h-14.97V75.99z"/><polygon class="st0" points="574.71,34.15 599.9,97.29 625.45,34.15 640.5,34.15 599.61,132.1 559.66,34.15 "/><path class="st0" d="M687.86,103.13h-39l-10.15,22.13H623.9l45.08-96.83l43.49,96.83h-15.05L687.86,103.13z M682.26,90.21 l-13.51-30.98l-14.16,30.98H682.26z"/></g>';
+    const iconStr = '<g><polygon class="st1" points="84.9,125.15 74.67,101.74 61.02,109.33 54.73,141.49 66.91,150.34 71.24,125.99 84.9,156.83 98.55,125.99 102.88,150.34 115.07,141.49 108.77,109.33 95.12,101.74 "/><polygon class="st1" points="98.18,94.75 105.77,94 103.52,82.52 "/><polygon class="st1" points="64.02,94 71.62,94.75 66.27,82.52 "/><polygon class="st2" points="161.32,101.3 136.22,78.79 160.71,82.19 156.07,67.87 123.52,63.92 112.09,74.55 131.19,91.51 105.77,94 108.77,109.33 137.41,125.25 149.6,116.4 127.78,104.76 "/><polygon class="st2" points="95.12,101.74 98.18,94.75 84.9,96.05 "/><polygon class="st2" points="106.39,69.49 108.02,62.04 96.41,60.63 "/><polygon class="st3" points="98.18,94.75 95.12,101.74 108.77,109.33 105.77,94 "/><polygon class="st4" points="113.51,37.09 108.02,62.04 123.52,63.92 147.52,41.6 142.87,27.28 125.05,44.43 132.13,11.46 102.96,28.38 113.77,6.13 98.71,6.13 84.9,35.85 91.48,50.01 "/><polygon class="st4" points="73.39,60.63 84.9,53.87 78.32,50.01 73.39,60.63 "/><polygon class="st4" points="103.52,82.52 112.09,74.55 106.39,69.49 "/><polygon class="st5" points="106.39,69.49 112.09,74.55 123.52,63.92 108.02,62.04 "/><polygon class="st6" points="91.48,50.01 84.9,53.87 96.41,60.63 "/><polygon class="st6" points="63.41,69.49 57.7,74.55 66.27,82.52 "/><polygon class="st6" points="56.28,37.09 78.32,50.01 84.9,35.85 71.09,6.13 56.03,6.13 66.83,28.38 37.66,11.46 44.74,44.43 26.92,27.28 22.27,41.6 46.27,63.92 61.77,62.04 "/><polygon class="st7" points="84.9,53.87 91.48,50.01 84.9,35.85 78.32,50.01 "/><polygon class="st8" points="71.62,94.75 74.67,101.74 84.9,96.05 "/><polygon class="st8" points="73.39,60.63 73.39,60.63 73.39,60.63 61.77,62.04 63.41,69.49 73.39,60.63 "/><polygon class="st8" points="38.6,91.51 57.7,74.55 46.27,63.92 13.69,67.87 9.08,82.19 33.58,78.79 8.47,101.3 42.02,104.76 20.2,116.4 32.38,125.25 61.02,109.33 64.02,94 "/><polygon class="st9" points="71.62,94.75 64.02,94 61.02,109.33 74.67,101.74 "/><polygon class="st10" points="63.41,69.49 61.77,62.04 46.27,63.92 57.7,74.55 "/></g>';
+    const svgStart = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 720 162" style="enable-background:new 0 0 720 162;" xml:space="preserve">';
+    const xmlV1 = '<?xml version="1.0" encoding="utf-8"?>';
+    const wrapSVG = (a) => {
+      return xmlV1 + svgStart + a.join('') + '</svg>';
+    }
+    const fullStr = wrapSVG([styleStr, wordStr, iconStr]);
+    const doc = parser.parseFromString(fullStr, "image/svg+xml");
+    return doc.children[0];
   },
 
   // Render one story
@@ -1329,7 +1693,7 @@ Render.prototype = {
   // Color all the remaining HTML Code elements
   colorMarkerText: function (wid_waypoint) {
     const HS = this.hashstate;
-    const channelOrders = this.channelOrders(HS.channels);
+    const channelOrders = this.channelOrders(HS.channel_names);
     const wid_code = wid_waypoint.getElementsByTagName('code');
     for (var i = 0; i < wid_code.length; i ++) {
       var code = wid_code[i];
@@ -1347,7 +1711,7 @@ Render.prototype = {
         });
       }
       var color = this.indexColor(index);
-      var border = color? '2px solid ' + color: 'inherit';
+      var border = color? '2px solid #' + color: 'inherit';
       $(code).css('border-bottom', border);
     }
   },

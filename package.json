@@ -9,13 +9,13 @@
     "jquery": "3.5.1",
     "js-yaml": "^3.14.0",
     "lz-string": "^1.4.4",
-    "openseadragon": "^2.4.2",
+    "openseadragon": "^4.0.0",
     "popper.js": "1.16.0",
     "process": "^0.11.10",
     "sha1": "^1.1.1",
     "showdown": "^1.9.1",
     "vega": "^5.20.2",
-    "vega-embed": "^6.18.2",
+    "vega-embed": "^6.20.3",
     "vega-lite": "^5.1.0"
   },
   "devDependencies": {
@@ -23,16 +23,14 @@
     "@babel/preset-env": "^7.14.7",
     "babel-loader": "^8.2.2",
     "webpack": "^5.61.0",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.3.1"
+    "webpack-cli": "^4.9.1"
   },
   "scripts": {
-    "start:dev": "webpack serve --mode development",
-    "develop": "webpack --mode development",
+    "develop": "webpack --watch --mode development -c webpack.config.dev.js",
     "build": "webpack --mode production"
   },
   "name": "minerva-browser",
-  "version": "3.2.6",
+  "version": "3.24.0",
   "description": "A storytelling interface atop openseadragon",
   "main": "index.js",
   "repository": {
