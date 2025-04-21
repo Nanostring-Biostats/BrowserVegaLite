@@ -4,7 +4,7 @@ export function getConfig() {
     return config;
 }
 
-const SUPPORTED_STORY_TYPES = ['colon', 'lymph node', 'mouse brain', 'human brain', 'kidney', 'pancreas', 'mousedev', 'cosmx-01-liver', 'liver', 'cosmx-01-crc'];
+const SUPPORTED_STORY_TYPES = ['colon', 'lymph node', 'mouse brain', 'human brain', 'kidney', 'pancreas', 'mousedev', 'cosmx-01-liver', 'liver', 'cosmx-01-crc', 'cosmx-bc-wtx'];
 
 function loadNanostringStory(storyType) {
     const storyFile = (() => {
@@ -28,7 +28,9 @@ function loadNanostringStory(storyType) {
         case 'liver':
           return require('./nanostringLiver');
         case 'cosmx-01-crc':
-          return require('./nanostringCosMx01CRC')
+          return require('./nanostringCosMx01CRC');
+        case 'cosmx-bc-wtx':
+          return require('./nanostringCosMxWTXBC');
         default:
           throw new Error('unsupported story type');
       }
