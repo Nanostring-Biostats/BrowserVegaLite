@@ -13,14 +13,14 @@ const wypt7Polygons = {
     leftrectangle: {
         panCoord: { x: 0.1717, y: 0.2573 },
         zoomRatio: 5.2277,
-        ROIBox: [{ overlay: { x: 0.1658, y: 0.0533, width: 0.1974, height: 0.1446 } }],
+        ROIBox: [],
         maskName: ["Activated CD8 T cells", "Interior stroma domain"],
         channel: "Membrane"
     },
     rightrectangle: {
         panCoord: { x: 0.1717, y: 0.2573 },
         zoomRatio: 5.2277,
-        ROIBox: [{ overlay: { x: 0.2715, y: 0.839, width: 0.0994, height: 0.0625 } }],
+        ROIBox: [],
         maskName: ["Activated CD8 T cells", "Exterior stroma domain"],
         chanel: "Membrane"
     }
@@ -29,14 +29,14 @@ const wypt9Polygons = {
     chr1rectangle: {
         panCoord: { x: 0.2764, y: 0.5818 }, 
         zoomRatio: 3.9027,
-        ROIBox: [{ overlay: { x: 0.1658, y: 0.0533, width: 0.1974, height: 0.1446 } }],
+        ROIBox: [],
         maskName: ["CNV event Chr1"],
         channel: "Membrane"
     },
     chr19rectangle: {
         panCoord: { x: 0.2764, y: 0.5818 },
         zoomRatio: 3.9027,
-        ROIBox: [{ overlay: { x: 0.2715, y: 0.839, width: 0.0994, height: 0.0625 } }],
+        ROIBox: [],
         maskName: ["CNV event Chr19"],
         chanel: "Membrane"
     }
@@ -46,7 +46,7 @@ const wypt3Polygons = {
     baselinearea: {
         panCoord: { x:0.2742, y: 0.7826 }, 
         zoomRatio: 1.0505,
-        ROIBox: [{ overlay: { x: 0.1658, y: 0.0533, width: 0.1974, height: 0.1446 } }],
+        ROIBox: [],
         maskName: ["Perturbation baseline"],
         channel: "Membrane"
     }
