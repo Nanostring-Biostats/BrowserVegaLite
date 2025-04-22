@@ -52,6 +52,16 @@ const wypt3Polygons = {
     }
 }
 
+const wypt2Polygons = {
+    hexplot: {
+        panCoord: { x:0.249, y: 0.7819 }, 
+        zoomRatio: 82.5565,
+        ROIBox: [],
+        maskName: ["All transcripts","Segmentation"],
+        channel: "Membrane"
+    }
+}
+
 // To be honest, I'm not sure if all of these are required
 /**
  * Add text, images, and clickhandlers to a specific waypoint.
@@ -107,6 +117,31 @@ function buildWaypoint(waypointNum, storyNum, domElement, osd, finish_waypoint) 
         svgContainer.onload = function () {
             const doc = this.getSVGDocument();
             Object.entries(wypt9Polygons).forEach(([key, val]) => {
+                const el = doc.querySelector(`#${key}`);
+                if (el) {
+                    // adding in only the click handler for panZoom
+                    addEListener(osd, val, el, ['addMaskAndChannel', 'panZoom'], storyNum, waypointNum);
+                }
+            });
+            finish_waypoint('');
+        }
+        domElement.appendChild(svgContainer);
+    }
+
+    // This is for the waypoint displayed as "2/n"
+    // Waypoint 2 figure - intro to sample
+    else if (waypointNum === 0 && storyNum === 1) {
+        const svgContainer = document.createElement('object');
+        // path to SVG file
+        svgContainer.data = 'svg/features_by_counts.svg'
+        svgContainer.type = 'image/svg+xml'
+        svgContainer.id = 'waypoint2figure'
+        // Add interactivity to the figure
+        // Cartoon click spots have SVG object ids that exactly match the object keys in the
+        // data structure "wypt2Polygons" above
+        svgContainer.onload = function () {
+            const doc = this.getSVGDocument();
+            Object.entries(wypt2Polygons).forEach(([key, val]) => {
                 const el = doc.querySelector(`#${key}`);
                 if (el) {
                     // adding in only the click handler for panZoom
