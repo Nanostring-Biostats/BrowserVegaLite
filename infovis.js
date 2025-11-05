@@ -4,23 +4,35 @@ import { legendColor } from 'd3-svg-legend'
 import colorbrewer from 'colorbrewer'
 var infovis = {};
 
-const renderVegaLite = function(wid_waypoint, id, visdata, events){
+
+const renderVegaLite = function(wid_waypoint, id, visdata, events) {
   try {
     return embed(`#${id}`, visdata, {
       tooltip: false,
       actions: false,
-      theme: 'dark'
+      theme: 'dark',
+      renderer: 'svg'
     })
     .then(result => {
-      result.view.addEventListener('click', function(event, item) {
-        events.clickHandler(item.datum)
+      console.log('Attaching pointerdown listener to Vega view:', result.view);
+      // One unified handler for all input types
+      result.view.addEventListener('pointerdown', (event, item) => {
+        console.log('Pointerdown fired:', event.type);
+        console.log('Item object:', item)
+        if (item && item.datum) {
+          console.log('Datum:', item.datum)
+          events.clickHandler(item.datum);
+        } else {
+          console.warn('No item detected under pointer.');
+        }
       });
-    }).catch(console.warn);
-  }
-   catch (error) {
+    })
+    .catch(console.warn);
+  } catch (error) {
     throw error;
   }
-}
+};
+
 
 infovis.renderMatrix = function(wid_waypoint, id, visdata, events) {
   return renderVegaLite(wid_waypoint, id, visdata, events);

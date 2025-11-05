@@ -123,7 +123,7 @@ export function addMaskAndChannel(osd, maskNames, channelName) {
  * @param {number} storyNum : the story number of the current waypoint
  * @param {number} waypointNum : the waypoint number of the current waypoint 
  */
-export function addEListener(osd, svgObj, svg, eventTypes, storyNum, waypointNum) {
+/* export function addEListener(osd, svgObj, svg, eventTypes, storyNum, waypointNum) {
     svg.addEventListener('click', () => {
         eventTypes.forEach((eventType) => {
             switch (eventType) {
@@ -144,4 +144,38 @@ export function addEListener(osd, svgObj, svg, eventTypes, storyNum, waypointNum
             }
         })
     });   
+} */
+
+
+    
+export function addEListener(osd, svgObj, svg, eventTypes, storyNum, waypointNum) {
+    const handler = () => {
+        eventTypes.forEach((eventType) => {
+            switch (eventType) {
+                case 'addPolygon':
+                    addSlidePolygon(svgObj.polygonID, svgObj.file, osd);
+                    break;
+                case 'panZoom':
+                    panZoom(osd, svgObj, storyNum, waypointNum);
+                    break;
+                case 'addMask':
+                    addMask(osd, svgObj.maskName);
+                    break;
+                case 'addMaskAndChannel':
+                    addMaskAndChannel(osd, svgObj.maskName, svgObj.channel);
+                    break;
+                default:
+                    break;
+            }
+        });
+    };
+
+    // Attach both click and touchend
+
+    svg.addEventListener('click', handler);
+    svg.addEventListener('touchend', (e) => {
+        e.preventDefault(); // Prevents synthetic click after touch
+        handler();
+    }, { passive: false });
 }
+
