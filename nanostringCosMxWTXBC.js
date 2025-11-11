@@ -11,17 +11,17 @@ import { addEListener, addSlidePolygon } from './nanostringUtils';
 
 const wypt7Polygons = {
     leftrectangle: {
-        panCoord: { x: 0.1717, y: 0.2573 },
-        zoomRatio: 5.2277,
+        panCoord: { x: 0.1938, y: 0.4633 },    
+        zoomRatio: 7.5279,
         ROIBox: [],
-        maskName: ["Activated CD8 T cells", "Interior stroma domain"],
+        maskName: ["CD8 cytotoxic effector T cell tumor core", "All tumor core cells"],
         channel: "Membrane"
     },
     rightrectangle: {
-        panCoord: { x: 0.1717, y: 0.2573 },
-        zoomRatio: 5.2277,
+        panCoord: { x: 0.1938, y: 0.4633 },
+        zoomRatio: 7.5279,
         ROIBox: [],
-        maskName: ["Activated CD8 T cells", "Exterior stroma domain"],
+        maskName: ["CD8 cytotoxic effector T cell stromal", "All stromal cells"],
         chanel: "Membrane"
     }
 }
