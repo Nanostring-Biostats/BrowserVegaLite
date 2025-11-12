@@ -26,16 +26,16 @@ const wypt7Polygons = {
     }
 }
 const wypt9Polygons = {
-    chr1rectangle: {
-        panCoord: { x: 0.2764, y: 0.5818 }, 
-        zoomRatio: 3.9027,
+    chr6rectangle: {
+        panCoord: { x: 0.2742, y: 0.5198 },
+        zoomRatio: 0.5,
         ROIBox: [],
-        maskName: ["CNV event Chr1"],
+        maskName: ["CNV event Chr6"],
         channel: "Membrane"
     },
     chr19rectangle: {
-        panCoord: { x: 0.2764, y: 0.5818 },
-        zoomRatio: 3.9027,
+        panCoord: { x: 0.2742, y: 0.5198 },
+        zoomRatio: 0.5,
         ROIBox: [],
         maskName: ["CNV event Chr19"],
         chanel: "Membrane"
